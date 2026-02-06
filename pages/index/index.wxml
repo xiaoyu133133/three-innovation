@@ -1,0 +1,60 @@
+<van-search value="{{ value }}" placeholder="搜索商品" shape="round" background="#ff6700" />
+
+<swiper class="banner-swiper" indicator-dots="{{true}}" autoplay="{{true}}" interval="3000" circular="{{true}}">
+  <swiper-item>
+    <image src="https://img.yzcdn.cn/vant/cat.jpeg" mode="aspectFill" class="banner-image" />
+  </swiper-item>
+  <swiper-item>
+    <image src="https://img.yzcdn.cn/vant/apple-1.jpg" mode="aspectFill" class="banner-image" />
+  </swiper-item>
+  <swiper-item>
+    <image src="https://img.yzcdn.cn/vant/apple-2.jpg" mode="aspectFill" class="banner-image" />
+  </swiper-item>
+</swiper>
+
+<van-grid column-num="4" border="{{ false }}">
+  <van-grid-item icon="shop-o" text="超市" />
+  <van-grid-item icon="gift-o" text="新品" />
+  <van-grid-item icon="fire-o" text="热卖" />
+  <van-grid-item icon="bill-o" text="福利" />
+</van-grid>
+
+<view class="section-title">
+  <van-icon name="fire" color="#ff6700" /> 热门推荐
+</view>
+
+<view class="product-container">
+  <view class="product-card">
+    <image class="product-img" src="https://img.yzcdn.cn/vant/ipad.jpeg" mode="widthFix" />
+    <view class="product-info">
+      <view class="product-name">2026新款 iPad Pro 平板电脑 M4芯片</view>
+      <view class="product-price-row">
+        <text class="price-symbol">¥</text>
+        <text class="price-num">6999</text>
+        <van-tag type="danger" size="mini">自营</van-tag>
+      </view>
+    </view>
+  </view>
+
+  <view class="product-card">
+    <image class="product-img" src="https://img.yzcdn.cn/vant/shoes.jpg" mode="widthFix" />
+    <view class="product-info">
+      <view class="product-name">运动跑鞋 透气舒适</view>
+      <view class="product-price-row">
+        <text class="price-symbol">¥</text>
+        <text class="price-num">299</text>
+      </view>
+    </view>
+  </view>
+  
+  <view class="product-card">
+    <image class="product-img" src="https://img.yzcdn.cn/vant/cat.jpeg" mode="widthFix" />
+    <view class="product-info">
+      <view class="product-name">可爱的猫咪 治愈系</view>
+      <view class="product-price-row">
+        <text class="price-symbol">¥</text>
+        <text class="price-num">9999</text>
+      </view>
+    </view>
+  </view>
+</view>

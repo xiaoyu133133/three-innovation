@@ -1,0 +1,18 @@
+# 忽略 Python 垃圾文件
+__pycache__/
+*.py[cod]
+venv/
+shop.db
+
+# 忽略 小程序/Node 垃圾文件
+node_modules/
+miniprogram_npm/
+unpackage/
+dist/
+
+# 忽略 系统垃圾文件
+.DS_Store
+Thumbs.db
+
+# 忽略 微信开发者工具生成的本地配置（选填，建议忽略）
+project.private.config.json
