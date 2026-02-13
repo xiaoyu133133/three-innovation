@@ -1,0 +1,25 @@
+<image src="{{product.image}}" mode="widthFix" class="goods-img" />
+
+<view class="goods-info-container">
+  <view class="goods-title">{{product.name}}</view>
+  <view class="goods-price-row">
+    <text>¥ {{product.price}}</text>
+    <van-tag type="danger" plain custom-class="tag-gap">{{product.tag}}</van-tag>
+  </view>
+</view>
+
+<view class="goods-detail-container">
+  <view class="section-title">商品详情</view>
+  <view class="section-content">
+    这里是商品的详细介绍文字。实际开发中，这里通常是后端返回的一段 HTML 富文本。
+    因为我们现在数据库比较简单，暂时先写死这段话。
+    你买不了吃亏，买不了上当！
+  </view>
+</view>
+
+<van-goods-action safe-area-inset-bottom="{{ true }}" style="z-index: 999;">
+  <van-goods-action-icon icon="chat-o" text="客服" />
+  <van-goods-action-icon icon="cart-o" text="购物车" info="0" link-type="switchTab" url="/pages/cart/cart" />
+  <van-goods-action-button text="加入购物车" type="warning" bind:click="addToCart" />
+  <van-goods-action-button text="立即购买" bind:click="buyNow" />
+</van-goods-action>

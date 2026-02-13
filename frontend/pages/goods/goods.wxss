@@ -1,0 +1,55 @@
+/* 页面背景 */
+page {
+  background-color: #f7f8fa;
+  padding-bottom: 120px; /* 给底部栏留位置 */
+  width: 100%;
+  overflow-x: hidden; /* 强制禁止左右滑动 */
+}
+
+/* 图片样式 */
+.goods-img {
+  width: 100%;
+  display: block;
+}
+
+/* 信息区容器 */
+.goods-info-container {
+  padding: 16px;
+  background: #fff;
+  margin-bottom: 10px;
+}
+
+.goods-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.goods-price-row {
+  color: #ff6700;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+}
+
+/* 给标签左边加点间距 */
+.tag-gap {
+  margin-left: 10px;
+}
+
+/* 详情区容器 */
+.goods-detail-container {
+  padding: 16px;
+  background: #fff;
+}
+
+.section-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.section-content {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.6;
+}

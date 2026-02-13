@@ -1,6 +1,6 @@
 {
   "compileType": "miniprogram",
-  "libVersion": "trial",
+  "libVersion": "3.14.2",
   "packOptions": {
     "ignore": [],
     "include": []
@@ -22,10 +22,10 @@
     "uploadWithSourceMap": true,
     "packNpmManually": true,
     "packNpmRelationList": [
-        {
-            "packageJsonPath": "./package.json",
-            "miniprogramNpmDistDir": "./"
-        }
+      {
+        "packageJsonPath": "./package.json",
+        "miniprogramNpmDistDir": "./"
+      }
     ],
     "minifyWXSS": true,
     "minifyWXML": true,

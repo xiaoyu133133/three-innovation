@@ -1,0 +1,10 @@
+/* 强制所有元素使用“边框盒子”模型，防止 padding 把宽度撑爆 */
+page, view, text, image, navigator {
+  box-sizing: border-box;
+}
+
+/* 统一页面背景色，看起来更专业 */
+page {
+  background-color: #f7f8fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Segoe UI, Arial, Roboto, 'PingFang SC', 'miui', 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif;
+}

@@ -24,36 +24,18 @@
 </view>
 
 <view class="product-container">
-  <view class="product-card">
-    <image class="product-img" src="https://img.yzcdn.cn/vant/ipad.jpeg" mode="widthFix" />
+  <view class="product-card" wx:for="{{products}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+    
+    <image class="product-img" src="{{item.image}}" mode="widthFix" />
+    
     <view class="product-info">
-      <view class="product-name">2026新款 iPad Pro 平板电脑 M4芯片</view>
+      <view class="product-name">{{item.name}}</view>
+      
       <view class="product-price-row">
         <text class="price-symbol">¥</text>
-        <text class="price-num">6999</text>
-        <van-tag type="danger" size="mini">自营</van-tag>
-      </view>
-    </view>
-  </view>
-
-  <view class="product-card">
-    <image class="product-img" src="https://img.yzcdn.cn/vant/shoes.jpg" mode="widthFix" />
-    <view class="product-info">
-      <view class="product-name">运动跑鞋 透气舒适</view>
-      <view class="product-price-row">
-        <text class="price-symbol">¥</text>
-        <text class="price-num">299</text>
-      </view>
-    </view>
-  </view>
-  
-  <view class="product-card">
-    <image class="product-img" src="https://img.yzcdn.cn/vant/cat.jpeg" mode="widthFix" />
-    <view class="product-info">
-      <view class="product-name">可爱的猫咪 治愈系</view>
-      <view class="product-price-row">
-        <text class="price-symbol">¥</text>
-        <text class="price-num">9999</text>
+        <text class="price-num">{{item.price}}</text>
+        
+        <van-tag wx:if="{{item.tag}}" type="danger" size="mini">{{item.tag}}</van-tag>
       </view>
     </view>
   </view>
