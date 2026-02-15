@@ -22,4 +22,14 @@
   <van-button type="primary" block size="large" bind:click="goToSimulate">
     进入电价模拟交易
   </van-button>
+  
+  <van-button 
+    type="info" 
+    plain 
+    block 
+    size="large" 
+    bind:click="refreshData" 
+    custom-style="margin-top: 15px;">
+    🔄 同步最新气象卫星数据
+  </van-button>
 </view>

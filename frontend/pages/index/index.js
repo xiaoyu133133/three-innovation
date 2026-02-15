@@ -92,7 +92,39 @@ Page({
       }
     });
   },
+// ... 之前的 fetchDashboardData 代码 ...
 
+  // ✨ 新增：手动触发数据同步
+  refreshData() {
+    wx.showLoading({ title: '正在连接卫星...' });
+    
+    wx.request({
+      url: 'http://127.0.0.1:8000/api/refresh_prediction', // 调用刚才写的后端接口
+      method: 'POST',
+      success: (res) => {
+        console.log("同步结果：", res.data);
+        
+        if (res.data.status === 'success') {
+          wx.showToast({ title: '同步完成', icon: 'success' });
+          
+          // 🔄 关键点：数据更新后，立即重新拉取图表数据，让曲线变样！
+          this.fetchDashboardData(); 
+          
+        } else {
+          wx.showToast({ title: '同步失败', icon: 'none' });
+        }
+      },
+      fail: (err) => {
+        console.error(err);
+        wx.showToast({ title: '网络错误', icon: 'none' });
+      },
+      complete: () => {
+        // wx.hideLoading(); // showToast 会自动覆盖 hideLoading，所以这里可以省掉，或者保留
+      }
+    });
+  },
+
+  // ... 之后的 goToSimulate 代码 ...
   goToSimulate() {
     wx.navigateTo({ url: '/pages/simulate/simulate' });
   }
