@@ -1,12 +1,9 @@
 {
-  "navigationBarTitleText": "商城",
+  "navigationBarTitleText": "哈班岔村光伏监测",
   "usingComponents": {
-    "van-button": "@vant/weapp/button/index",
-    "van-search": "@vant/weapp/search/index",
+    "ec-canvas": "../../ec-canvas/ec-canvas",
     "van-grid": "@vant/weapp/grid/index",
     "van-grid-item": "@vant/weapp/grid-item/index",
-    "van-image": "@vant/weapp/image/index",
-    "van-icon": "@vant/weapp/icon/index",
-    "van-tag": "@vant/weapp/tag/index"
+    "van-button": "@vant/weapp/button/index"
   }
 }

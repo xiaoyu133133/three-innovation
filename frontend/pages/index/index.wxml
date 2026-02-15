@@ -1,42 +1,25 @@
-<van-search value="{{ value }}" placeholder="搜索商品" shape="round" background="#ff6700" />
-
-<swiper class="banner-swiper" indicator-dots="{{true}}" autoplay="{{true}}" interval="3000" circular="{{true}}">
-  <swiper-item>
-    <image src="https://img.yzcdn.cn/vant/cat.jpeg" mode="aspectFill" class="banner-image" />
-  </swiper-item>
-  <swiper-item>
-    <image src="https://img.yzcdn.cn/vant/apple-1.jpg" mode="aspectFill" class="banner-image" />
-  </swiper-item>
-  <swiper-item>
-    <image src="https://img.yzcdn.cn/vant/apple-2.jpg" mode="aspectFill" class="banner-image" />
-  </swiper-item>
-</swiper>
-
-<van-grid column-num="4" border="{{ false }}">
-  <van-grid-item icon="shop-o" text="超市" />
-  <van-grid-item icon="gift-o" text="新品" />
-  <van-grid-item icon="fire-o" text="热卖" />
-  <van-grid-item icon="bill-o" text="福利" />
-</van-grid>
-
-<view class="section-title">
-  <van-icon name="fire" color="#ff6700" /> 热门推荐
+<view class="data-card">
+  <view class="data-item">
+    <view class="data-title">当前功率 (kW)</view>
+    <view class="data-value highlight">{{currentPower}}</view>
+  </view>
+  <view class="data-item">
+    <view class="data-title">今日峰值 (kW)</view>
+    <view class="data-value">{{maxPower}}</view>
+  </view>
+  <view class="data-item">
+    <view class="data-title">系统状态</view>
+    <view class="data-value" style="font-size: 16px; color: #07c160;">运行中</view>
+  </view>
 </view>
 
-<view class="product-container">
-  <view class="product-card" wx:for="{{products}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
-    
-    <image class="product-img" src="{{item.image}}" mode="widthFix" />
-    
-    <view class="product-info">
-      <view class="product-name">{{item.name}}</view>
-      
-      <view class="product-price-row">
-        <text class="price-symbol">¥</text>
-        <text class="price-num">{{item.price}}</text>
-        
-        <van-tag wx:if="{{item.tag}}" type="danger" size="mini">{{item.tag}}</van-tag>
-      </view>
-    </view>
-  </view>
+<view class="chart-container">
+  <view class="chart-title">未来24h功率预测</view>
+  <ec-canvas id="mychart-dom-line" canvas-id="mychart-line" ec="{{ ec }}"></ec-canvas>
+</view>
+
+<view class="action-area">
+  <van-button type="primary" block size="large" bind:click="goToSimulate">
+    进入电价模拟交易
+  </van-button>
 </view>

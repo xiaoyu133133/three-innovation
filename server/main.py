@@ -3,6 +3,7 @@ from pydantic import BaseModel
 import sqlite3
 import datetime
 import uvicorn
+from model import fetch_weather_and_predict
 
 app = FastAPI()
 
@@ -93,6 +94,28 @@ def submit_trade(req: TradeRequest):
     conn.close()
     
     return {"status": "success", "order_id": cursor.lastrowid}
+
+# ---接口 4: 刷新预测数据（手动触发）---
+@app.post("/api/refresh_prediction")
+def refresh_prediction():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # 1. 调用模型获取最新数据
+    new_data = fetch_weather_and_predict()
+    
+    if new_data:
+        cursor.execute('DELETE FROM pv_prediction')
+        cursor.executemany('INSERT INTO pv_prediction (time_point, power_kw) VALUES (?, ?)', new_data)
+        conn.commit()
+        status = "success"
+        msg = "已同步最新气象卫星数据"
+    else:
+        status = "error"
+        msg = "气象接口连接失败"
+        
+    conn.close()
+    return {"status": status, "message": msg}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
