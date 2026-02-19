@@ -16,7 +16,7 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "商城",
+        "text": "预测",
         "iconPath": "icons/home.png",
         "selectedIconPath": "icons/home-active.png"
       },
