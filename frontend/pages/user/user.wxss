@@ -1,1 +1,31 @@
-/* pages/user/user.wxss */
+page { 
+  background-color: #f7f8fa; 
+}
+
+.user-header {
+  background: linear-gradient(to right, #07c160 0%, #30A865 100%);
+  padding: 40px 20px; /* 增加了一点上下内边距显得更大气 */
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+.avatar-box {
+  width: 70px; 
+  height: 70px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  margin-right: 15px;
+}
+
+.name { 
+  font-size: 22px; 
+  font-weight: bold; 
+}
+
+.menu-list { 
+  margin-top: 20px; 
+}

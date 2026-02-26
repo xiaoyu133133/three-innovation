@@ -64,5 +64,110 @@ ec-canvas {
 
 /* 3. 底部功能区 */
 .action-area {
-  margin: 20px 15px;
+  margin-top: 20px;
+  padding: 0 20px; /* 强制左右留出 20px 的内边距 */
+  box-sizing: border-box; /* 确保 padding 包含在宽度内 */
+  width: 100%;
+}
+/* ✨ 智能运维评分卡片样式 */
+.eff-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 15px 20px;
+}
+
+.eff-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+
+.eff-title {
+  font-size: 15px;
+  font-weight: bold;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.demo-btn {
+  font-size: 11px;
+  color: #999;
+  background: #f5f5f5;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.eff-score-area {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 15px;
+}
+
+.score-label {
+  font-size: 14px;
+  color: #666;
+}
+
+.score-value {
+  font-size: 32px;
+  font-weight: bold;
+  margin: 0 4px 0 8px;
+}
+
+.score-unit {
+  font-size: 14px;
+  color: #666;
+  margin-right: 12px;
+}
+
+.score-grade {
+  font-size: 12px;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.eff-details {
+  background: #fafafa;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+
+.eff-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.eff-row:last-child {
+  margin-bottom: 0;
+}
+
+.row-label {
+  font-size: 13px;
+  color: #666;
+}
+
+.row-value {
+  font-size: 13px;
+  font-weight: bold;
+  color: #333;
+}
+
+.eff-reason {
+  font-size: 12px;
+  color: #666;
+  background: #fff;
+  padding: 8px 10px;
+  border-left: 3px solid #ccc; /* 颜色会通过内联样式被覆盖 */
+  border-radius: 0 4px 4px 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  line-height: 1.5;
 }

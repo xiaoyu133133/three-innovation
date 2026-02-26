@@ -1,0 +1,48 @@
+page {
+  background-color: #f7f8fa;
+}
+
+.header-banner {
+  background: linear-gradient(to right, #1989fa 0%, #00b4db 100%);
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.banner-title {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.info-card {
+  margin-top: 15px; /* ✨ 修改：改为正数，让卡片在蓝色区域的正下方留出舒适的空隙 */
+}
+
+.status-text {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.score-demo {
+  margin: 30px 20px;
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  text-align: center;
+}
+
+.demo-text {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 5px;
+}
+
+.demo-score {
+  font-size: 14px;
+  color: #333;
+}

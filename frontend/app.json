@@ -1,34 +1,31 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/user/user", 
-    "pages/logs/logs",
-    "pages/goods/goods"
+    "pages/simulate/simulate",
+    "pages/user/user",
+    "pages/order_list/order_list",
+    "pages/station_info/station_info" 
   ],
   "window": {
-    "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "三创商城",
-    "navigationBarBackgroundColor": "#ffffff"
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "哈班岔村光伏",
+    "navigationBarTextStyle": "black"
   },
   "tabBar": {
-    "color": "#999999",
-    "selectedColor": "#ff6700",
+    "color": "#7A7E83",
+    "selectedColor": "#07c160",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "预测",
-        "iconPath": "icons/home.png",
-        "selectedIconPath": "icons/home-active.png"
+        "text": "实时监测"
       },
       {
         "pagePath": "pages/user/user",
-        "text": "我的",
-        "iconPath": "icons/user.png",
-        "selectedIconPath": "icons/user-active.png"
+        "text": "我的" 
       }
     ]
-  },
-  "componentFramework": "glass-easel",
-  "sitemapLocation": "sitemap.json",
-  "lazyCodeLoading": "requiredComponents"
+  }
 }

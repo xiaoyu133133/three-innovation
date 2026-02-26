@@ -11,7 +11,7 @@ LON = 104.12
 # 模型文件路径
 MODEL_PATH = os.path.join(os.path.dirname(__file__), 'pv_model.pkl')
 
-SYSTEM_SCALE = 100 
+SYSTEM_SCALE = 500 
 
 def fetch_weather_and_predict():
     

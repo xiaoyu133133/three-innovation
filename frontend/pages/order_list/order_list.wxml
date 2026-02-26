@@ -1,0 +1,50 @@
+<view class="container">
+
+<view class="empty-box" wx:if="{{ orders.length === 0 }}">
+  <van-empty description="当前无交易记录" />
+</view>
+
+<view class="order-list" wx:if="{{ orders.length > 0 }}">
+  <van-checkbox-group value="{{ selectedIds }}" bind:change="onCheckboxChange">
+    <block wx:for="{{ orders }}" wx:key="id">
+      <view class="order-item-wrap" bindlongpress="enterEditMode">
+        
+        <view class="checkbox-container" wx:if="{{ isEditMode }}">
+          <van-checkbox name="{{ item.id + '' }}" checked-color="#ee0a24"></van-checkbox>
+        </view>
+        
+        <view class="order-card" bindtap="toggleSingleCard" data-id="{{ item.id }}">
+          <view class="order-header">
+            <text class="time">{{ item.trade_time }}</text>
+            <text class="status-tag">交易成功</text>
+          </view>
+          <view class="order-content">
+            <view class="item">
+              <text class="label">消纳电量</text>
+              <text class="value">{{ item.buy_count }} kWh</text>
+            </view>
+            <view class="item">
+              <text class="label">结算总价</text>
+              <text class="value price">¥ {{ item.total_price }}</text>
+            </view>
+          </view>
+        </view>
+
+      </view>
+    </block>
+  </van-checkbox-group>
+</view>
+
+<view class="bottom-bar" wx:if="{{ isEditMode }}">
+  <view class="select-all-btn" bindtap="selectAll">
+    <van-checkbox value="{{ isAllSelected }}" checked-color="#ee0a24">全选</van-checkbox>
+  </view>
+  <view class="action-btns">
+    <van-button size="small" type="default" custom-style="margin-right: 10px;" bind:click="exitEditMode">取消</van-button>
+    <van-button size="small" type="danger" bind:click="deleteSelected" disabled="{{ selectedIds.length === 0 }}">
+      删除 ({{ selectedIds.length }})
+    </van-button>
+  </view>
+</view>
+
+</view>

@@ -1,2 +1,29 @@
-<!--pages/user/user.wxml-->
-<text>pages/user/user.wxml</text>
+<view class="container">
+  
+  <view class="user-header">
+    <view class="avatar-box">
+      <van-icon name="manager" size="45px" color="#fff" />
+    </view>
+    <view class="name">哈班岔村用户</view>
+  </view>
+
+  <view class="menu-list">
+    <van-cell-group inset>
+      <van-cell 
+        title="电站基础信息" 
+        icon="info-o" 
+        is-link 
+        size="large" 
+        bind:click="goToStationInfo" 
+      />
+      <van-cell 
+        title="光伏交易明细" 
+        icon="orders-o" 
+        is-link 
+        size="large" 
+        bind:click="goToOrderList" 
+      />
+    </van-cell-group>
+  </view>
+
+</view>

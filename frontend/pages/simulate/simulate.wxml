@@ -1,0 +1,52 @@
+<view class="container">
+  
+  <view class="card">
+    <view class="title">⚡ 购电需求模拟</view>
+    
+    <van-cell-group>
+      <picker mode="selector" range="{{ hours }}" bindchange="onTimeChange">
+        <van-cell title="用电时段" value="{{ targetTime || '请选择时间' }}" is-link />
+      </picker>
+
+      <van-field
+        model:value="{{ buyCount }}"
+        label="购电量 (kWh)"
+        placeholder="请输入购买度数"
+        type="digit"
+        border="{{ false }}"
+      />
+    </van-cell-group>
+
+    <view style="margin-top: 25px;">
+      <van-button type="info" block bind:click="startSimulate">开始计算模拟电价</van-button>
+    </view>
+  </view>
+
+  <van-dialog
+    use-slot
+    title="💰 模拟结果"
+    show="{{ showDialog }}"
+    show-cancel-button
+    confirm-button-text="购买"
+    cancel-button-text="取消"
+    bind:confirm="confirmTrade"
+    bind:cancel="closeDialog"
+  >
+    <view class="dialog-content">
+      <view class="result-row">
+        <text class="label">当前预测功率:</text>
+        <text class="value">{{ simulationResult.current_power }} kW</text>
+      </view>
+      <view class="result-row">
+        <text class="label">核算单价:</text>
+        <text class="value">{{ simulationResult.unit_price }} 元/度</text>
+      </view>
+      <view class="result-note">{{ simulationResult.message }}</view>
+      
+      <view class="total-cost">
+        预计总费用: ¥ {{ simulationResult.total_cost }}
+      </view>
+    </view>
+  </van-dialog>
+
+</view>

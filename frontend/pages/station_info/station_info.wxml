@@ -1,0 +1,34 @@
+<view class="container">
+  
+  <view class="header-banner">
+    <view class="banner-title">哈班岔村分布式光伏示范站</view>
+  </view>
+
+  <view class="info-card">
+    <van-cell-group inset>
+      <van-cell title="电站编号" value="{{ stationId }}" />
+      <van-cell title="装机容量" value="{{ capacity }} kWp" />
+      
+      <picker mode="date" value="{{ gridTime }}" bindchange="onDateChange">
+        <van-cell title="并网时间" value="{{ gridTime }}" is-link />
+      </picker>
+
+      <van-cell title="电站地址" value="{{ address }}" />
+      <van-cell title="运维负责" value="{{ team }}" />
+      
+      <van-cell title="设备状态">
+        <view slot="right-icon" class="status-text" style="color: {{ statusColor }};">
+          {{ statusText }}
+        </view>
+      </van-cell>
+    </van-cell-group>
+  </view>
+
+  <view class="score-demo">
+    <view class="demo-text">实时诊断依据：</view>
+    <view class="demo-score">
+      当前发电效率评分：<text style="color: {{ statusColor }}; font-weight: bold; font-size: 18px;">{{ score }} 分</text>
+    </view>
+  </view>
+
+</view>

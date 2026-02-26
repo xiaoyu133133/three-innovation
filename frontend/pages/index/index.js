@@ -53,11 +53,16 @@ Page({
   data: {
     ec: { onInit: initChart },
     currentPower: 0,
-    maxPower: 0
+    maxPower: 0,
+    // ✨ 新增：评分数据相关的状态
+    effData: null,
+    demoModes: ['优秀', '良好', '一般', '异常'],
+    currentModeIndex: 1 // 默认演示“良好”
   },
 
   onLoad() {
     this.fetchDashboardData();
+    this.fetchEfficiencyData('良好'); // 首次加载请求良好状态
   },
 
   fetchDashboardData() {
@@ -92,12 +97,11 @@ Page({
       }
     });
   },
-// ... 之前的 fetchDashboardData 代码 ...
 
   // ✨ 新增：手动触发数据同步
   refreshData() {
     wx.showLoading({ title: '正在连接卫星...' });
-    
+
     wx.request({
       url: 'http://127.0.0.1:8000/api/refresh_prediction', // 调用刚才写的后端接口
       method: 'POST',
@@ -124,8 +128,36 @@ Page({
     });
   },
 
-  // ... 之后的 goToSimulate 代码 ...
   goToSimulate() {
     wx.navigateTo({ url: '/pages/simulate/simulate' });
+  },
+
+  // ✨ 获取效率评分数据，并存入缓存
+  fetchEfficiencyData(mode) {
+    wx.request({
+      url: `http://127.0.0.1:8000/api/efficiency?mode=${mode}`,
+      method: 'GET',
+      success: (res) => {
+        this.setData({
+          effData: res.data
+        });
+        // ✅ 唯一的修改点：将确切的分数存入本地缓存，保证电站信息页数据完全一致
+        wx.setStorageSync('currentEffScore', res.data.score);
+      }
+    });
+  },
+
+  // ✨ 新增：演示模式切换按钮（专为答辩准备）
+  toggleDemoMode() {
+    let nextIndex = this.data.currentModeIndex + 1;
+    if (nextIndex >= this.data.demoModes.length) {
+      nextIndex = 0;
+    }
+    const nextMode = this.data.demoModes[nextIndex];
+    
+    this.setData({ currentModeIndex: nextIndex });
+    this.fetchEfficiencyData(nextMode);
+    
+    wx.showToast({ title: `切换至: ${nextMode}`, icon: 'none' });
   }
 });

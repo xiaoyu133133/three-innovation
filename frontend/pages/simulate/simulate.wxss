@@ -1,0 +1,49 @@
+page {
+  background-color: #f7f8fa;
+  padding: 15px; /* 页面四周恢复留白 */
+  box-sizing: border-box;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* 恢复卡片阴影 */
+}
+
+.title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  padding-left: 8px;
+  border-left: 4px solid #1989fa;
+}
+
+/* 弹窗内部排版优化 */
+.dialog-content {
+  padding: 25px 20px;
+}
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 15px;
+  color: #333;
+}
+
+.result-note {
+  font-size: 12px;
+  color: #999;
+  text-align: right;
+  margin-bottom: 25px;
+}
+
+.total-cost {
+  text-align: center;
+  font-size: 20px;
+  color: #ff6700;
+  font-weight: bold;
+  padding-top: 20px;
+  border-top: 1px dashed #eee;
+}

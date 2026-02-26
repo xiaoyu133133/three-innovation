@@ -13,6 +13,38 @@
   </view>
 </view>
 
+<view class="data-card eff-card" wx:if="{{ effData }}">
+  <view class="eff-header">
+    <view class="eff-title">
+      <van-icon name="aim" size="16px" custom-style="margin-right:4px;" />
+      智能运行分析
+    </view>
+    <view class="demo-btn" bindtap="toggleDemoMode">模拟切换 ↺</view>
+  </view>
+  
+  <view class="eff-score-area">
+    <text class="score-label">发电效率评分：</text>
+    <text class="score-value" style="color: {{ effData.color }}">{{ effData.score }}</text>
+    <text class="score-unit">分</text>
+    <text class="score-grade" style="background-color: {{ effData.color }}">{{ effData.grade }}</text>
+  </view>
+
+  <view class="eff-details">
+    <view class="eff-row">
+      <text class="row-label">今日理论发电量：</text>
+      <text class="row-value">{{ effData.theoretical }} kWh</text>
+    </view>
+    <view class="eff-row">
+      <text class="row-label">今日实际发电量：</text>
+      <text class="row-value">{{ effData.actual }} kWh</text>
+    </view>
+  </view>
+
+  <view class="eff-reason" style="border-left-color: {{ effData.color }}">
+    <text style="font-weight:bold; color:#333;">诊断结果：</text>{{ effData.reason }}
+  </view>
+</view>
+
 <view class="chart-container">
   <view class="chart-title">未来24h功率预测</view>
   <ec-canvas id="mychart-dom-line" canvas-id="mychart-line" ec="{{ ec }}"></ec-canvas>
