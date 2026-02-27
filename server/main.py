@@ -13,14 +13,13 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+# --- 核心任务：定时爬取、存储、清理 ---
 def scheduled_prediction_task():
-    print(f" [{datetime.datetime.now()}] 开始执行定时预测任务...")
+    print(f"⏰ [{datetime.datetime.now()}] 开始执行定时预测任务...")
     
-    #爬取最新数据
     new_data = fetch_weather_and_predict()
-    
     if not new_data:
-        print("失败：未获取到气象数据")
+        print("❌ 任务失败：未获取到气象数据")
         return
 
     conn = get_db_connection()
@@ -28,26 +27,26 @@ def scheduled_prediction_task():
     today_str = datetime.date.today().strftime("%Y-%m-%d")
 
     try:
-        # 清理过期数据
-        three_days_ago = (datetime.date.today() - datetime.timedelta(days=3)).strftime("%Y-%m-%d")
-        cursor.execute("DELETE FROM pv_prediction WHERE prediction_date < ?", (three_days_ago,))
-        expired_count = cursor.rowcount # 记录过期删除数
+        # 2. 清理过期策略：删除 5 天前的数据
+        five_days_ago = (datetime.date.today() - datetime.timedelta(days=5)).strftime("%Y-%m-%d")
+        cursor.execute("DELETE FROM pv_prediction WHERE prediction_date < ?", (five_days_ago,))
         
-        # 覆盖策略旧记录
+        # ✨ 新增：同步清理 5 天前的效率数据
+        cursor.execute("DELETE FROM daily_efficiency WHERE prediction_date < ?", (five_days_ago,))
+        expired_count = cursor.rowcount
+        
         cursor.execute("DELETE FROM pv_prediction WHERE prediction_date = ?", (today_str,))
-        overwritten_count = cursor.rowcount # 记录覆盖删除数
+        overwritten_count = cursor.rowcount 
         
-        # 插入今日最新预测
         data_to_insert = [(item[0], item[1], today_str) for item in new_data]
         cursor.executemany('INSERT INTO pv_prediction (time_point, power_kw, prediction_date) VALUES (?, ?, ?)', data_to_insert)
         
         conn.commit()
-        
         total_deleted = expired_count + overwritten_count
-        print(f"清理旧数据 {total_deleted} 条 (过期:{expired_count}, 覆盖:{overwritten_count})，存入新数据 {len(data_to_insert)} 条 (日期: {today_str})")
+        print(f"✅ 任务完成！清理旧数据 {total_deleted} 条，存入新数据 {len(data_to_insert)} 条 (日期: {today_str})")
         
     except Exception as e:
-        print(f"数据库操作出错: {e}")
+        print(f"❌ 数据库操作出错: {e}")
     finally:
         conn.close()
 
@@ -78,6 +77,10 @@ class TradeRequest(BaseModel):
     user_name: str
     buy_count: float
     total_price: float
+
+# 在前面的 class SimulationRequest(BaseModel): 附近加上：
+class WithdrawRequest(BaseModel):
+    amount: float
 
 @app.get("/api/dashboard")
 def get_dashboard_data():
@@ -204,50 +207,49 @@ def clear_orders():
     return {"status": "success"}
 
 # ✨ 新增接口：获取发电效率评分 (支持传入 mode 进行演示切换)
+# --- ✨ 接口：获取发电效率评分 (支持固化数据与强制演示切换) ---
 @app.get("/api/efficiency")
-def get_efficiency(mode: str = "良好"):
-    # 1. 理论发电量计算
-    capacity = 500.0  # 甲方预设：500 kWp
-    sun_hours = 4.0   # 兰州地区日均有效日照大致为 4 小时
-    sys_efficiency = 0.8 # 系统通用效率系数
+def get_efficiency(mode: str = "良好", force: str = "false"):
+    today_str = datetime.date.today().strftime("%Y-%m-%d")
+    conn = get_db_connection()
+    is_force = (force.lower() == "true")
     
-    theoretical_kwh = capacity * sun_hours * sys_efficiency # 理论值：1600 kWh
+    capacity = 500.0
+    sun_hours = 4.0
+    sys_efficiency = 0.8
+    theoretical_kwh = capacity * sun_hours * sys_efficiency
     
-    # 2. 根据模式生成模拟的实际发电量
-    if mode == "优秀":
-        # 90-100分
-        actual_kwh = theoretical_kwh * random.uniform(0.91, 0.98)
-    elif mode == "一般":
-        # 70-79分
-        actual_kwh = theoretical_kwh * random.uniform(0.71, 0.78)
-    elif mode == "异常":
-        # <70分
-        actual_kwh = theoretical_kwh * random.uniform(0.50, 0.65)
+    # 查询今天是否已经有评分了
+    row = conn.execute("SELECT score FROM daily_efficiency WHERE prediction_date = ?", (today_str,)).fetchone()
+    
+    if row and not is_force:
+        # 如果已经存在，且不是强制切换，则直接使用现有分数，逆向推导实际发电量
+        score = row['score']
+        actual_kwh = theoretical_kwh * (score / 100.0)
     else:
-        # 默认：良好 (80-89分)
-        actual_kwh = theoretical_kwh * random.uniform(0.81, 0.88)
-        mode = "良好" # 兜底
-        
-    # 3. 计算评分
-    score = int((actual_kwh / theoretical_kwh) * 100)
-    
-    # 4. 匹配评级与话术、颜色
+        # 如果是今天第一次，或者是点击了“切换按钮(force=true)”，则重新生成随机数
+        if mode == "优秀": actual_kwh = theoretical_kwh * random.uniform(0.91, 0.98)
+        elif mode == "一般": actual_kwh = theoretical_kwh * random.uniform(0.71, 0.78)
+        elif mode == "异常": actual_kwh = theoretical_kwh * random.uniform(0.50, 0.65)
+        else:
+            actual_kwh = theoretical_kwh * random.uniform(0.81, 0.88)
+            mode = "良好"
+        score = int((actual_kwh / theoretical_kwh) * 100)
+
+    # 根据分数匹配文案和颜色 (保持全局统一)
     if score >= 90:
-        grade = "优秀"
-        reason = "发电正常，系统运行处于最佳状态"
-        color = "#07c160" # 绿色
+        grade, reason, color = "优秀", "发电正常，系统运行处于最佳状态", "#07c160"
     elif score >= 80:
-        grade = "良好"
-        reason = "运行平稳，可能受轻微云层遮挡影响"
-        color = "#1989fa" # 蓝色
+        grade, reason, color = "良好", "运行平稳，可能受轻微云层遮挡影响", "#1989fa"
     elif score >= 70:
-        grade = "一般"
-        reason = "可能原因：光伏板轻微遮挡 / 表面灰尘影响严重"
-        color = "#ff976a" # 橙色
+        grade, reason, color = "一般", "可能原因：光伏板轻微遮挡 / 表面灰尘影响严重", "#ff976a"
     else:
-        grade = "异常"
-        reason = "可能原因：逆变器故障 / 严重遮挡，建议立即派单检查"
-        color = "#ee0a24" # 红色
+        grade, reason, color = "异常", "可能原因：逆变器故障 / 严重遮挡，建议立即派单检查", "#ee0a24"
+        
+    # 保存或更新今天的固定效率
+    conn.execute("INSERT OR REPLACE INTO daily_efficiency (prediction_date, score) VALUES (?, ?)", (today_str, score))
+    conn.commit()
+    conn.close()
         
     return {
         "score": score,
@@ -257,6 +259,103 @@ def get_efficiency(mode: str = "良好"):
         "reason": reason,
         "color": color
     }
+
+# ✨ 新增接口：获取最近 5 天真实的计算收益
+@app.get("/api/surplus")
+def get_surplus_data():
+    conn = get_db_connection()
+    today = datetime.date.today()
+    # 生成过去 5 天的日期列表（包括今天）
+    days = [(today - datetime.timedelta(days=i)).strftime("%Y-%m-%d") for i in range(4, -1, -1)]
+    
+    chart_data = []
+    today_data = {}
+    
+    for d in days:
+        # 1. 查当日理论发电量 (对 24 小时的预测功率求积分：SUM)
+        row = conn.execute("SELECT SUM(power_kw) as total_power FROM pv_prediction WHERE prediction_date = ?", (d,)).fetchone()
+        theoretical = row['total_power'] if row and row['total_power'] else 0
+        
+        # 防呆设计：如果系统昨天没运行导致没数据，为了答辩展示不空屏，保底给一个 2000 度的基础值
+        if theoretical == 0:
+            theoretical = 2000.0 + random.uniform(-200, 200)
+            
+        # 2. 查当日效率评分
+        score_row = conn.execute("SELECT score FROM daily_efficiency WHERE prediction_date = ?", (d,)).fetchone()
+        score = score_row['score'] if score_row else 85 # 没查到默认给 85 分
+        
+        # 3. 核心计算：实际发电量 = 理论量 * 效率
+        actual_gen = theoretical * (score / 100.0)
+        
+        surplus = actual_gen * 0.70  # 余电上网 70%
+        self_use = actual_gen * 0.30 # 自发自用 30%
+        
+        income = surplus * 0.41 # 上网收益
+        saved = self_use * 0.56 # 节省电费
+        total_rev = income + saved
+        
+        # 装入图表数组
+        chart_data.append({
+            "date": d,
+            "income": round(income, 2),
+            "saved": round(saved, 2)
+        })
+        
+        # 记录今天的数据供卡片使用
+        if d == today.strftime("%Y-%m-%d"):
+            today_data = {
+                "totalGen": round(actual_gen, 1),
+                "selfUse": round(self_use, 1),
+                "surplus": round(surplus, 1),
+                "income": round(income, 2),
+                "saved": round(saved, 2),
+                "totalRev": round(total_rev, 2)
+            }
+            
+    conn.close()
+    return {"chart_data": chart_data, "today_data": today_data}
+
+# ================= ✨ 提现记录相关接口 =================
+
+# 1. 申请提现
+@app.post("/api/withdraw")
+def apply_withdraw(req: WithdrawRequest):
+    conn = get_db_connection()
+    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    # ✨ 修改：真实发起提现时，状态必须是 0 (待审核)
+    conn.execute("INSERT INTO withdrawals (amount, status, apply_time) VALUES (?, ?, ?)", (req.amount, 0, now))
+    conn.commit()
+    conn.close()
+    return {"status": "success"}
+
+# 2. 获取提现记录
+@app.get("/api/withdraws")
+def get_withdraws():
+    conn = get_db_connection()
+    rows = conn.execute("SELECT * FROM withdrawals ORDER BY id DESC").fetchall()
+    conn.close()
+    return {"data": [dict(r) for r in rows]}
+
+# 3. 删除提现记录
+@app.delete("/api/withdraws/{w_id}")
+def delete_withdraw(w_id: int):
+    conn = get_db_connection()
+    conn.execute('DELETE FROM withdrawals WHERE id = ?', (w_id,))
+    conn.commit()
+    conn.close()
+    return {"status": "success"}
+
+# ✨ 4. 新增：推进结算状态接口 (0->1->2)
+@app.put("/api/withdraws/{w_id}/advance")
+def advance_withdraw(w_id: int):
+    conn = get_db_connection()
+    row = conn.execute("SELECT status FROM withdrawals WHERE id = ?", (w_id,)).fetchone()
+    if row and row['status'] < 2:
+        new_status = row['status'] + 1
+        conn.execute("UPDATE withdrawals SET status = ? WHERE id = ?", (new_status, w_id))
+        conn.commit()
+    conn.close()
+    return {"status": "success"}
 
 if __name__ == "__main__":
     import uvicorn

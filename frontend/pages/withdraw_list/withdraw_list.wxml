@@ -1,0 +1,52 @@
+<view class="container">
+  
+  <view class="total-board">
+    <view class="total-title">累计已到账总收益 (元)</view>
+    <view class="total-amount">¥ {{ totalBalance }}</view>
+  </view>
+
+  <view class="empty-box" wx:if="{{ records.length === 0 }}">
+    <van-empty description="当前无提现记录" />
+  </view>
+
+  <view class="order-list" wx:if="{{ records.length > 0 }}">
+    <van-checkbox-group value="{{ selectedIds }}" bind:change="onCheckboxChange">
+      <block wx:for="{{ records }}" wx:key="id">
+        <view class="order-item-wrap" bindlongpress="enterEditMode">
+          
+          <view class="checkbox-container" wx:if="{{ isEditMode }}">
+            <van-checkbox name="{{ item.id + '' }}" checked-color="#ee0a24"></van-checkbox>
+          </view>
+          
+          <view class="order-card" bindtap="onCardTap" data-id="{{ item.id }}" data-index="{{ index }}">
+            <view class="order-header">
+              <text class="time">{{ item.apply_time }}</text>
+              <view class="header-right">
+                <text class="amount-text">¥ {{ item.amount }}</text>
+                </view>
+            </view>
+            
+            <view class="steps-container {{ item.status === 2 ? 'step-done' : '' }}" 
+                  wx:if="{{ item.showSteps }}" 
+                  catchtap="advanceStep" 
+                  data-index="{{ index }}" 
+                  data-id="{{ item.id }}">
+              <van-steps steps="{{ stepsConfig }}" active="{{ item.status }}" active-color="#07c160" />
+            </view>
+
+          </view>
+        </view>
+      </block>
+    </van-checkbox-group>
+  </view>
+
+  <view class="bottom-bar" wx:if="{{ isEditMode }}">
+    <view class="select-all-btn" bindtap="selectAll">
+      <van-checkbox value="{{ isAllSelected }}" checked-color="#ee0a24">全选</van-checkbox>
+    </view>
+    <view class="action-btns">
+      <van-button size="small" type="default" custom-style="margin-right: 10px;" bind:click="exitEditMode">取消</van-button>
+      <van-button size="small" type="danger" bind:click="deleteSelected" disabled="{{ selectedIds.length === 0 }}">删除 ({{ selectedIds.length }})</van-button>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "余额与提现记录",
+  "usingComponents": {
+    "van-empty": "@vant/weapp/empty/index",
+    "van-button": "@vant/weapp/button/index",
+    "van-checkbox": "@vant/weapp/checkbox/index",
+    "van-checkbox-group": "@vant/weapp/checkbox-group/index",
+    "van-steps": "@vant/weapp/steps/index"
+  }
+}

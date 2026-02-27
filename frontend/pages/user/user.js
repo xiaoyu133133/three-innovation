@@ -1,10 +1,6 @@
 Page({
-  goToOrderList() {
-    wx.navigateTo({ url: '/pages/order_list/order_list' });
-  },
-  
-  // ✨ 新增跳转逻辑
-  goToStationInfo() {
-    wx.navigateTo({ url: '/pages/station_info/station_info' });
-  }
+  goToOrderList() { wx.navigateTo({ url: '/pages/order_list/order_list' }); },
+  goToStationInfo() { wx.navigateTo({ url: '/pages/station_info/station_info' }); },
+  // ✨ 新增跳转
+  goToSurplus() { wx.navigateTo({ url: '/pages/surplus/surplus' }); }
 });

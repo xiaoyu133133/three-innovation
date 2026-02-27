@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "收益与结算",
+  "usingComponents": {
+    "ec-canvas": "../../ec-canvas/ec-canvas",
+    "van-button": "@vant/weapp/button/index",
+    "van-steps": "@vant/weapp/steps/index",
+    "van-icon": "@vant/weapp/icon/index"
+  }
+}

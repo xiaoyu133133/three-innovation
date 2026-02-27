@@ -4,7 +4,10 @@
     "pages/simulate/simulate",
     "pages/user/user",
     "pages/order_list/order_list",
-    "pages/station_info/station_info" 
+    "pages/station_info/station_info",
+    "pages/surplus/surplus",
+    "pages/withdraw_list/withdraw_list",
+    "pages/carbon_points/carbon_points"
   ],
   "window": {
     "backgroundTextStyle": "light",
