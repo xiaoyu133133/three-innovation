@@ -8,7 +8,10 @@
     "pages/surplus/surplus",
     "pages/withdraw_list/withdraw_list",
     "pages/carbon_points/carbon_points",
-    "pages/points_mall/points_mall"
+    "pages/points_mall/points_mall",
+    "pages/village_summary/village_summary",
+    "pages/policies/policies",
+    "pages/om_manage/om_manage"
   ],
   "window": {
     "backgroundTextStyle": "light",

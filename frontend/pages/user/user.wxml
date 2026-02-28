@@ -8,12 +8,22 @@
   </view>
 
   <view class="menu-list">
-    <van-cell-group inset>
-      <van-cell title="电站基础信息" icon="info-o" is-link size="large" bind:click="goToStationInfo" />
-      <van-cell title="光伏交易明细" icon="orders-o" is-link size="large" bind:click="goToOrderList" />
-      <van-cell title="余电上网与收益" icon="balance-pay" is-link size="large" bind:click="goToSurplus" />
-      <van-cell title="光积分与碳账户" icon="award-o" is-link size="large" bind:click="goToCarbonPoints" />
+    
+    <view class="group-title">个人光伏资产</view>
+    <van-cell-group inset custom-class="group-card">
+      <van-cell title="电站基础信息" icon="info-o" is-link bind:click="goToStationInfo" />
+      <van-cell title="光伏交易明细" icon="orders-o" is-link bind:click="goToOrderList" />
+      <van-cell title="余电上网与收益" icon="balance-pay" is-link bind:click="goToSurplus" />
+      <van-cell title="光积分与碳账户" icon="award-o" is-link bind:click="goToCarbonPoints" />
     </van-cell-group>
+
+    <view class="group-title">整村治理与服务</view>
+    <van-cell-group inset custom-class="group-card">
+      <van-cell title="村集体光伏大屏" icon="bar-chart-o" is-link bind:click="goToVillageSummary" />
+      <van-cell title="国家光伏扶持政策" icon="newspaper-o" is-link bind:click="goToPolicies" />
+      <van-cell title="智能运维与报修" icon="setting-o" is-link bind:click="goToOMManage" />
+    </van-cell-group>
+
   </view>
 
 </view>

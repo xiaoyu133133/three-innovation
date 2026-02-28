@@ -1,0 +1,44 @@
+<view class="container">
+  <view class="kpi-board">
+    <view class="kpi-grid">
+      <view class="kpi-item">
+        <view class="kpi-label">总装机容量(kWp)</view>
+        <view class="kpi-value">500.0</view>
+      </view>
+      <view class="kpi-item">
+        <view class="kpi-label">预计年发电量(kWh)</view>
+        <view class="kpi-value">720,500</view>
+      </view>
+      <view class="kpi-item">
+        <view class="kpi-label">预计年总收益(元)</view>
+        <view class="kpi-value hl">360,250</view>
+      </view>
+      <view class="kpi-item">
+        <view class="kpi-label">年减排CO₂(吨)</view>
+        <view class="kpi-value eco">718.3</view>
+      </view>
+      <view class="kpi-item">
+        <view class="kpi-label">村集体增收(元)</view>
+        <view class="kpi-value hl">108,075</view>
+      </view>
+      <view class="kpi-item">
+        <view class="kpi-label">每户分红预测(元)</view>
+        <view class="kpi-value">1,500</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="chart-card">
+    <view class="card-title"><van-icon name="bar-chart-o" color="#1989fa"/> 2026年各月发电量预测</view>
+    <view class="chart-box">
+      <ec-canvas id="mychart-bar" canvas-id="mychart-bar" ec="{{ ecBar }}" force-use-old-canvas="true"></ec-canvas>
+    </view>
+  </view>
+
+  <view class="chart-card">
+    <view class="card-title"><van-icon name="chart-trending-o" color="#07c160"/> 效益与负荷趋势预测</view>
+    <view class="chart-box">
+      <ec-canvas id="mychart-line" canvas-id="mychart-line" ec="{{ ecLine }}" force-use-old-canvas="true"></ec-canvas>
+    </view>
+  </view>
+</view>
