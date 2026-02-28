@@ -1,1 +1,96 @@
-/* pages/carbon_points/carbon_points.wxss */
+page {
+  background-color: #f7f8fa;
+  padding-bottom: 30px;
+}
+
+/* 顶部绿色大屏 */
+.header-banner {
+  background: linear-gradient(135deg, #07c160, #30A865);
+  padding: 40px 20px 60px 20px;
+  color: white;
+  text-align: center;
+  position: relative;
+}
+.points-title { font-size: 14px; opacity: 0.9; margin-bottom: 10px; }
+.points-value { font-size: 40px; font-weight: bold; display: flex; justify-content: center; align-items: center; }
+.points-desc { font-size: 12px; opacity: 0.8; margin-top: 5px; }
+.cert-btn { position: absolute !important; right: 20px; top: 20px; color: #07c160 !important; font-weight: bold; }
+
+/* ✨ 新增商城入口样式 */
+.mall-entry {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 13px;
+  margin-top: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.2s;
+}
+.mall-entry:active { background: rgba(255, 255, 255, 0.3); }
+
+/* 通用卡片 */
+.card {
+  background: white; border-radius: 12px; padding: 15px; margin: -20px 15px 20px 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; z-index: 10;
+}
+.card-title { font-size: 16px; font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; gap: 5px; }
+
+/* 碳换算区域 */
+.eco-data { display: flex; justify-content: space-between; border-bottom: 1px dashed #eee; padding-bottom: 15px; margin-bottom: 15px; }
+.eco-item { display: flex; flex-direction: column; }
+.eco-label { font-size: 12px; color: #666; margin-bottom: 5px; }
+.eco-val { font-size: 20px; font-weight: bold; color: #333; }
+.unit { font-size: 12px; font-weight: normal; color: #999; }
+
+.eco-exchange { display: flex; justify-content: space-around; }
+.exchange-box { text-align: center; background: #f8fcf9; padding: 15px 30px; border-radius: 8px; }
+.ex-text { font-size: 12px; color: #666; margin: 8px 0 4px 0; }
+.ex-num { font-size: 18px; font-weight: bold; color: #333; }
+.ex-unit { font-size: 12px; font-weight: normal; }
+
+/* 任务列表 */
+.task-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f9f9f9; }
+.task-item:last-child { border-bottom: none; }
+.task-name { font-size: 15px; font-weight: bold; color: #333; margin-bottom: 4px; }
+.task-score { color: #ff6700; font-size: 12px; background: #fff3eb; padding: 2px 6px; border-radius: 4px; margin-left: 5px; }
+.task-desc { font-size: 12px; color: #999; }
+
+/* 排名列表 */
+.rank-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 10px; border-bottom: 1px dashed #eee; }
+.rank-item.is-me { background: #f0f8ff; border-radius: 8px; border: none; }
+.rank-left { display: flex; align-items: center; }
+.rank-num { width: 24px; font-size: 14px; font-weight: bold; color: #999; }
+.rank-1 { color: #ffd700; } .rank-2 { color: #c0c0c0; } .rank-3 { color: #cd7f32; }
+.rank-name { font-size: 14px; color: #333; margin-left: 10px; }
+.rank-right { font-size: 15px; font-weight: bold; color: #07c160; }
+
+/* 电子证书海报 */
+.cert-poster { width: 320px; display: flex; flex-direction: column; align-items: center; }
+.cert-bg { background: url('https://img.yzcdn.cn/vant/ipad.jpeg') center/cover; padding: 30px; border-radius: 12px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+/* ...前面的代码保留... */
+
+/* 电子证书海报 (新版极简质感样式) */
+.cert-poster { width: 320px; display: flex; flex-direction: column; align-items: center; }
+
+/* ✨ 删除了背景图片，改用双层绿边的实体证书风格 */
+.cert-bg { 
+  background: #ffffff; 
+  padding: 30px; 
+  position: relative; 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+  border: 4px double #07c160; /* 双层绿色边框，极具权威感 */
+  border-radius: 4px; /* 证书一般方正一点，所以圆角改小 */
+}
+
+/* 删除了之前的 ::before 遮罩代码，现在不需要了 */
+
+.cert-title { font-size: 22px; font-weight: bold; color: #07c160; text-align: center; margin-bottom: 25px; letter-spacing: 2px; }
+.cert-content { font-size: 14px; color: #333; line-height: 1.8; }
+.cert-name { display: block; font-weight: bold; margin-bottom: 10px; }
+.cert-p { display: block; margin-bottom: 10px; text-indent: 2em; }
+.hl { color: #ee0a24; font-size: 16px; font-weight: bold; margin: 0 4px; }
+.cert-footer { margin-top: 30px; text-align: right; }
+.cert-date { font-size: 12px; color: #666; margin-bottom: 5px; }
+.cert-seal { display: inline-block; color: #ee0a24; border: 2px solid #ee0a24; padding: 5px 15px; border-radius: 50%; font-weight: bold; transform: rotate(-15deg); font-family: "STKaiti", serif; }

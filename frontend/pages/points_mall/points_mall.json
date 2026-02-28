@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "光积分助农商城",
+  "navigationBarBackgroundColor": "#07c160",
+  "navigationBarTextStyle": "white",
+  "usingComponents": {
+    "van-icon": "@vant/weapp/icon/index"
+  }
+}

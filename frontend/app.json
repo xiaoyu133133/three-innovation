@@ -7,7 +7,8 @@
     "pages/station_info/station_info",
     "pages/surplus/surplus",
     "pages/withdraw_list/withdraw_list",
-    "pages/carbon_points/carbon_points"
+    "pages/carbon_points/carbon_points",
+    "pages/points_mall/points_mall"
   ],
   "window": {
     "backgroundTextStyle": "light",

@@ -1,2 +1,98 @@
-<!--pages/carbon_points/carbon_points.wxml-->
-<text>pages/carbon_points/carbon_points.wxml</text>
+<view class="container">
+  <view class="header-banner">
+    <view class="points-title">我的光积分</view>
+    <view class="points-value"><van-icon name="award" size="28px" custom-style="margin-right:8px;" />{{ points }}</view>
+    
+    <view class="mall-entry" bindtap="goToMall">
+      <text>进入积分商城兑换好礼</text>
+      <van-icon name="arrow" />
+    </view>
+
+    <van-button round type="default" size="small" custom-class="cert-btn" bind:click="showCertificate">
+      <van-icon name="medal-o" /> 生成电子证书
+    </van-button>
+  </view>
+
+  <view class="card eco-card">
+    <view class="card-title"><van-icon name="leaf-o" color="#07c160" /> 本月碳减排贡献</view>
+    <view class="eco-data">
+      <view class="eco-item">
+        <text class="eco-label">本月光伏发电</text>
+        <text class="eco-val">{{ totalPower }} <text class="unit">度</text></text>
+      </view>
+      <view class="eco-item">
+        <text class="eco-label">本月减少CO₂排放</text>
+        <text class="eco-val" style="color:#07c160;">{{ co2Reduction }} <text class="unit">kg</text></text>
+      </view>
+    </view>
+    
+    <view class="eco-exchange">
+      <view class="exchange-box">
+        <van-icon name="flower-o" size="30px" color="#07c160" />
+        <view class="ex-text">等效种树</view>
+        <view class="ex-num">{{ trees }} <text class="ex-unit">棵</text></view>
+      </view>
+      <view class="exchange-box">
+        <van-icon name="logistics" size="30px" color="#1989fa" />
+        <view class="ex-text">等效少开车</view>
+        <view class="ex-num">{{ carKm }} <text class="ex-unit">公里</text></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-title"><van-icon name="todo-list-o" color="#ff976a" /> 赚取光积分</view>
+    <view class="task-list">
+      <view class="task-item" wx:for="{{ tasks }}" wx:key="id">
+        <view class="task-info">
+          <view class="task-name">{{ item.name }} <text class="task-score">+{{ item.score }}分</text></view>
+          <view class="task-desc">{{ item.desc }}</view>
+        </view>
+        <van-button 
+          round 
+          type="{{ item.done ? 'default' : 'primary' }}" 
+          size="small" 
+          disabled="{{ item.done }}"
+          bind:click="doTask" 
+          data-id="{{ item.id }}"
+          data-score="{{ item.score }}">
+          {{ item.done ? '已完成' : item.btnText }}
+        </van-button>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-title"><van-icon name="bar-chart-o" color="#ee0a24" /> 全村本月减排排名</view>
+    <view class="rank-list">
+      <view class="rank-item {{ item.isMe ? 'is-me' : '' }}" wx:for="{{ villageRank }}" wx:key="name">
+        <view class="rank-left">
+          <view class="rank-num rank-{{ index + 1 }}" wx:if="{{ index < 3 }}"><van-icon name="medal" size="20px" /></view>
+          <view class="rank-num" wx:else>{{ index + 1 }}</view>
+          <view class="rank-name">{{ item.name }}</view>
+        </view>
+        <view class="rank-right">{{ item.co2 }} kg</view>
+      </view>
+    </view>
+  </view>
+
+  <van-popup show="{{ showCert }}" bind:close="closeCertificate" custom-style="background: transparent;">
+    <view class="cert-poster">
+      <view class="cert-bg">
+        <view class="cert-title">光伏环保卫士证书</view>
+        <view class="cert-content">
+          <text class="cert-name">尊敬的哈班岔村农户：</text>
+          <text class="cert-p">感谢您参与乡村微电网建设！截至今日，您的光伏电站本月已发电 <text class="hl">{{ totalPower }}</text> 度。</text>
+          <text class="cert-p">本月减少碳排放 <text class="hl">{{ co2Reduction }}</text> kg，相当于为您热爱的地球种下了 <text class="hl">{{ trees }}</text> 棵树，减少了汽车行驶 <text class="hl">{{ carKm }}</text> 公里。</text>
+        </view>
+        <view class="cert-footer">
+          <view class="cert-date">颁发时间：{{ todayDate }}</view>
+          <view class="cert-seal">微电先锋</view>
+        </view>
+      </view>
+      <van-button type="primary" block round custom-style="margin-top: 20px;" bind:click="closeCertificate">长按保存或关闭</van-button>
+    </view>
+  </van-popup>
+
+  <van-toast id="van-toast" />
+</view>

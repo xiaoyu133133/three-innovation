@@ -12,6 +12,7 @@
       <van-cell title="电站基础信息" icon="info-o" is-link size="large" bind:click="goToStationInfo" />
       <van-cell title="光伏交易明细" icon="orders-o" is-link size="large" bind:click="goToOrderList" />
       <van-cell title="余电上网与收益" icon="balance-pay" is-link size="large" bind:click="goToSurplus" />
+      <van-cell title="光积分与碳账户" icon="award-o" is-link size="large" bind:click="goToCarbonPoints" />
     </van-cell-group>
   </view>
 

@@ -1,0 +1,50 @@
+page { background-color: #f7f8fa; padding-bottom: 30px; }
+
+/* 顶部积分栏 */
+.assets-header {
+  background: linear-gradient(to right, #07c160, #30A865);
+  padding: 20px;
+  display: flex; justify-content: space-between; align-items: center;
+  color: white; border-radius: 0 0 20px 20px;
+  box-shadow: 0 4px 10px rgba(7,193,96,0.2);
+  margin-bottom: 20px;
+}
+.assets-label { font-size: 14px; opacity: 0.9; margin-right: 10px; }
+.assets-num { font-size: 28px; font-weight: bold; }
+
+/* 淘宝双列卡片布局 */
+.goods-list {
+  display: flex; flex-wrap: wrap; justify-content: space-between;
+  padding: 0 15px;
+}
+
+.goods-card {
+  width: 48%; /* 占一半宽度，留出中间间隙 */
+  background: white; border-radius: 12px;
+  margin-bottom: 15px; overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  transition: transform 0.1s;
+}
+.goods-card:active { transform: scale(0.98); } /* 点击缩放效果 */
+
+/* 占位图样式 */
+.goods-img-placeholder {
+  height: 160px; width: 100%;
+  display: flex; justify-content: center; align-items: center;
+  color: white; font-size: 24px; font-weight: bold; font-family: 'STKaiti', serif;
+  text-shadow: 1px 2px 4px rgba(0,0,0,0.1);
+}
+
+.goods-info { padding: 12px; }
+.goods-name { font-size: 14px; font-weight: bold; color: #333; margin-bottom: 4px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.goods-desc { font-size: 11px; color: #999; margin-bottom: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.goods-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+.goods-price { color: #ff6700; }
+.price-num { font-size: 18px; font-weight: bold; }
+.price-unit { font-size: 11px; margin-left: 2px; }
+
+.buy-btn {
+  background: #ff6700; color: white; font-size: 12px;
+  padding: 4px 12px; border-radius: 12px; font-weight: bold;
+}
