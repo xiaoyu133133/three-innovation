@@ -29,3 +29,12 @@ page {
 .menu-list { 
   margin-top: 20px; 
 }
+
+.group-title {
+  font-size: 13px;
+  color: #999;
+  margin: 15px 0 8px 20px;
+}
+.group-card {
+  margin-bottom: 10px;
+}

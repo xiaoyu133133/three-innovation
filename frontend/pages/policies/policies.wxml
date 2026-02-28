@@ -1,0 +1,20 @@
+<view class="container">
+  <view class="header-banner">国家及地方光伏扶持政策汇编</view>
+  
+  <view class="policy-list">
+    <block wx:for="{{ policies }}" wx:key="id">
+      <view class="policy-card">
+        <view class="policy-header">
+          <van-icon name="{{ item.icon }}" color="#1989fa" size="20px" />
+          <text class="policy-title">{{ item.title }}</text>
+        </view>
+        <view class="policy-content">
+          <view class="policy-point" wx:for="{{ item.points }}" wx:for-item="point" wx:key="index">
+            <text class="dot">•</text> {{ point }}
+          </view>
+        </view>
+        <view class="policy-source">来源：{{ item.source }}</view>
+      </view>
+    </block>
+  </view>
+</view>

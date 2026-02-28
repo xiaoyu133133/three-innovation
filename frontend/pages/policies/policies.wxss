@@ -1,0 +1,10 @@
+page { background: #f7f8fa; padding-bottom: 30px; }
+.header-banner { background: #1989fa; color: white; padding: 20px; font-size: 18px; font-weight: bold; text-align: center; }
+.policy-list { padding: 15px; margin-top: -10px; }
+.policy-card { background: white; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+.policy-header { display: flex; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+.policy-title { font-size: 16px; font-weight: bold; color: #333; margin-left: 8px; }
+.policy-content { font-size: 13px; color: #666; line-height: 1.6; }
+.policy-point { margin-bottom: 6px; display: flex; }
+.dot { color: #1989fa; margin-right: 5px; font-weight: bold; }
+.policy-source { font-size: 11px; color: #999; text-align: right; margin-top: 10px; }
