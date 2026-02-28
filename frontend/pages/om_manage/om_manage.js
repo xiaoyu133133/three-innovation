@@ -1,36 +1,51 @@
 Page({
   data: {
     issueType: '',
-    issueDesc: '',
-    hasOrder: false, // 是否有工单
-    activeStep: 0,
-    steps: [
-      { text: '已接单', desc: '运维工程师 王师傅 已接单，正赶往现场' },
-      { text: '维修中', desc: '工程师正在排查/处理问题' },
-      { text: '已完成', desc: '设备已恢复正常运行' }
-    ]
+    issueDesc: ''
   },
 
   submitRepair() {
     if (!this.data.issueType) {
       return wx.showToast({ title: '请输入故障类型', icon: 'none' });
     }
+    
     wx.showLoading({ title: '提交中...' });
+    
     setTimeout(() => {
       wx.hideLoading();
       wx.showToast({ title: '报修成功', icon: 'success' });
-      // 生成工单并重置进度
-      this.setData({ hasOrder: true, activeStep: 0 });
+      
+      let orders = wx.getStorageSync('om_orders') || [];
+      const now = new Date();
+      
+      // ✨ 核心修改：生成精确到秒的时间字符串，拼凑为工单号
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hour = String(now.getHours()).padStart(2, '0');
+      const minute = String(now.getMinutes()).padStart(2, '0');
+      const second = String(now.getSeconds()).padStart(2, '0');
+      const orderNo = `REP${year}${month}${day}${hour}${minute}${second}`;
+
+      const newOrder = {
+        id: Date.now(),
+        orderNo: orderNo,
+        type: this.data.issueType,
+        desc: this.data.issueDesc,
+        time: now.toLocaleString(),
+        status: 0 // 初始状态为 0 (已接单)
+      };
+      
+      orders.unshift(newOrder); 
+      wx.setStorageSync('om_orders', orders);
+
+      this.setData({ issueType: '', issueDesc: '' });
+      wx.navigateTo({ url: '/pages/om_list/om_list' });
+      
     }, 600);
   },
 
-  advanceRepairStep() {
-    if (this.data.activeStep < 2) {
-      wx.vibrateShort();
-      this.setData({ activeStep: this.data.activeStep + 1 });
-      if (this.data.activeStep === 2) {
-        wx.showToast({ title: '维修完成！', icon: 'success' });
-      }
-    }
+  goToOrderList() {
+    wx.navigateTo({ url: '/pages/om_list/om_list' });
   }
 });

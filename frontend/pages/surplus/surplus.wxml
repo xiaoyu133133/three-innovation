@@ -1,33 +1,56 @@
 <view class="container">
-  <view class="card">
-    <view class="card-title">⚡ 今日能量互动结构</view>
-    <view class="chart-box pie-box">
-      <ec-canvas id="mychart-dom-pie" canvas-id="mychart-pie" ec="{{ ecPie }}" force-use-old-canvas="true"></ec-canvas>
+
+<view class="card">
+  <view class="card-title">⚡ 今日能量互动结构</view>
+  <view class="chart-box pie-box">
+    <ec-canvas id="mychart-dom-pie" canvas-id="mychart-pie" ec="{{ ecPie }}" force-use-old-canvas="true"></ec-canvas>
+  </view>
+</view>
+
+<view class="card">
+  <view class="card-title">💰 今日收益报表</view>
+  
+  <view class="data-grid">
+    <view class="data-item">
+      <text class="label">当日发电量</text>
+      <text class="value">{{ currentData.totalGen }} <text class="unit">度</text></text>
+    </view>
+    <view class="data-item">
+      <text class="label">自发自用</text>
+      <text class="value">{{ currentData.selfUse }} <text class="unit">度</text></text>
+    </view>
+    <view class="data-item">
+      <text class="label">余电上网</text>
+      <text class="value">{{ currentData.surplus }} <text class="unit">度</text></text>
     </view>
   </view>
 
-  <view class="card">
-    <view class="card-title">💰 今日收益报表</view>
-    <view class="data-grid">
-      <view class="data-item"><text class="label">当日发电量</text><text class="value">{{ currentData.totalGen }} <text class="unit">度</text></text></view>
-      <view class="data-item"><text class="label">自发自用</text><text class="value">{{ currentData.selfUse }} <text class="unit">度</text></text></view>
-      <view class="data-item"><text class="label">余电上网</text><text class="value">{{ currentData.surplus }} <text class="unit">度</text></text></view>
+  <view class="revenue-box">
+    <view class="rev-item">
+      <text>上网收益 (0.41元/度)</text>
+      <text class="money" style="color: #1989fa;">+ ¥{{ currentData.income }}</text>
     </view>
-    <view class="revenue-box">
-      <view class="rev-item"><text>上网收益 (0.41元/度)</text><text class="money" style="color: #1989fa;">+ ¥{{ currentData.income }}</text></view>
-      <view class="rev-item"><text>省钱费用 (0.56元/度)</text><text class="money" style="color: #07c160;">+ ¥{{ currentData.saved }}</text></view>
-      <view class="rev-total"><text>今日综合产生价值：</text><text class="total-money">¥ {{ currentData.totalRev }}</text></view>
+    <view class="rev-item">
+      <text>省钱费用 (0.56元/度)</text>
+      <text class="money" style="color: #07c160;">+ ¥{{ currentData.saved }}</text>
     </view>
-    <view class="chart-box bar-box">
-      <ec-canvas id="mychart-dom-bar" canvas-id="mychart-bar" ec="{{ ecBar }}" force-use-old-canvas="true"></ec-canvas>
+    <view class="rev-total">
+      <text>今日综合产生价值：</text>
+      <text class="total-money">¥ {{ currentData.totalRev }}</text>
     </view>
   </view>
+  
+  <view class="chart-box bar-box">
+    <ec-canvas id="mychart-dom-bar" canvas-id="mychart-bar" ec="{{ ecBar }}" force-use-old-canvas="true"></ec-canvas>
+  </view>
+</view>
 
-  <view class="action-area">
-    <view class="balance-text">当前可提现余额：<text style="font-size: 20px; font-weight:bold; color:#1989fa;">¥ {{ withdrawableAmount }}</text></view>
-    <view class="btn-group">
-      <van-button plain type="info" custom-class="half-btn" bind:click="goToWithdrawList">查看余额</van-button>
-      <van-button type="primary" custom-class="half-btn" bind:click="applyWithdraw">申请提现</van-button>
-    </view>
-  </view>
+<cover-view class="action-area-cover">
+  <cover-view class="balance-text-cover">当前可提现余额：¥ {{ withdrawableAmount }}</cover-view>
+  <cover-view class="btn-group-cover">
+    <button class="cover-btn plain-btn" bindtap="goToWithdrawList">查看余额</button>
+    <button class="cover-btn primary-btn" bindtap="applyWithdraw">申请提现</button>
+  </cover-view>
+</cover-view>
+
 </view>

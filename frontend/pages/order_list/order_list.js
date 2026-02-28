@@ -13,7 +13,7 @@ Page({
   fetchOrders() {
     wx.showNavigationBarLoading();
     wx.request({
-      url: 'http://127.0.0.1:8000/api/orders',
+      url: 'https://2b77f0d8.r9.vip.cpolar.cn/api/orders',
       method: 'GET',
       success: (res) => {
         this.setData({ 
@@ -94,7 +94,7 @@ Page({
           const deletePromises = selectedIds.map(id => {
             return new Promise((resolve) => {
               wx.request({
-                url: `http://127.0.0.1:8000/api/orders/${id}`,
+                url: `https://2b77f0d8.r9.vip.cpolar.cn/api/orders/${id}`,
                 method: 'DELETE',
                 success: resolve,
                 fail: resolve

@@ -14,7 +14,7 @@ Page({
   fetchDetail(id) {
     wx.showLoading({ title: '加载中' });
     wx.request({
-      url: `http://127.0.0.1:8000/api/products/${id}`, // 注意这里用了反引号
+      url: `https://2b77f0d8.r9.vip.cpolar.cn/api/products/${id}`, // 注意这里用了反引号
       success: (res) => {
         console.log("详情数据：", res.data);
         this.setData({ product: res.data.data });

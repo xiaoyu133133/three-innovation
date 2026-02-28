@@ -27,7 +27,7 @@ Page({
   fetchRealDataAndRender() {
     wx.showNavigationBarLoading();
     wx.request({
-      url: 'http://127.0.0.1:8000/api/surplus',
+      url: 'https://2b77f0d8.r9.vip.cpolar.cn/api/surplus',
       method: 'GET',
       success: (res) => {
         const todayData = res.data.today_data;
@@ -147,7 +147,7 @@ applyWithdraw() {
       if (res.confirm) {
         wx.showLoading({ title: '申请中...' });
         wx.request({
-          url: 'http://127.0.0.1:8000/api/withdraw',
+          url: 'https://2b77f0d8.r9.vip.cpolar.cn/api/withdraw',
           method: 'POST',
           data: { amount: amount },
           success: (wRes) => {

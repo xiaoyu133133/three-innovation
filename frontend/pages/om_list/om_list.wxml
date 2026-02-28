@@ -1,0 +1,44 @@
+<view class="container">
+  <van-empty wx:if="{{ orders.length === 0 }}" description="暂无报修记录" />
+
+  <view class="order-list" wx:if="{{ orders.length > 0 }}">
+    <van-checkbox-group value="{{ selectedIds }}" bind:change="onCheckboxChange">
+      <block wx:for="{{ orders }}" wx:key="id">
+        <view class="order-item-wrap" bindlongpress="enterEditMode">
+          
+          <view class="checkbox-container" wx:if="{{ isEditMode }}">
+            <van-checkbox name="{{ item.id + '' }}" checked-color="#ee0a24"></van-checkbox>
+          </view>
+          
+          <view class="card" bindtap="onCardTap" data-id="{{ item.id }}" data-index="{{ index }}">
+            <view class="card-title">
+              <text>维修工单</text>
+              <text class="order-no">单号: {{ item.orderNo }}</text>
+            </view>
+            
+            <view class="issue-snapshot">
+              <view>故障类型：<text style="color:#333; font-weight:bold;">{{ item.type }}</text></view>
+              <view wx:if="{{ item.desc }}">详情描述：{{ item.desc }}</view>
+              <view style="margin-top: 4px; font-size: 11px; color:#999;">报修时间：{{ item.time }}</view>
+            </view>
+
+            <view class="steps-area {{ item.status === 2 ? 'step-done' : '' }}">
+              <van-steps steps="{{ stepsConfig }}" active="{{ item.status }}" direction="vertical" active-color="#1989fa" />
+            </view>
+          </view>
+          
+        </view>
+      </block>
+    </van-checkbox-group>
+  </view>
+
+  <view class="bottom-bar" wx:if="{{ isEditMode }}">
+    <view class="select-all-btn" bindtap="selectAll">
+      <van-checkbox value="{{ isAllSelected }}" checked-color="#ee0a24">全选</van-checkbox>
+    </view>
+    <view class="action-btns">
+      <van-button size="small" type="default" custom-style="margin-right: 10px;" bind:click="exitEditMode">取消</van-button>
+      <van-button size="small" type="danger" bind:click="deleteSelected" disabled="{{ selectedIds.length === 0 }}">删除 ({{ selectedIds.length }})</van-button>
+    </view>
+  </view>
+</view>

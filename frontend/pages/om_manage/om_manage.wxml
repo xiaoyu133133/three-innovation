@@ -1,29 +1,10 @@
 <view class="container">
-  
-  <view class="header-tip"><van-icon name="volume-o" /> 7×24小时专业团队为您护航</view>
-
   <view class="card">
     <view class="card-title">发起报修</view>
     <van-field model:value="{{ issueType }}" label="故障类型" placeholder="如：逆变器报警 / 表面破损" border="{{ false }}" />
     <van-field model:value="{{ issueDesc }}" label="详细描述" type="textarea" placeholder="请简单描述您遇到的问题" autosize border="{{ false }}" />
-    <van-button type="info" block custom-style="margin-top: 15px; border-radius: 8px;" bind:click="submitRepair">提交报修单</van-button>
-  </view>
-
-  <view class="card" wx:if="{{ hasOrder }}">
-    <view class="card-title" style="justify-content: space-between; display: flex;">
-      <text>维修工单进度</text>
-      <text class="order-no">工单号: REP20260228</text>
-    </view>
     
-    <view class="issue-snapshot">
-      <view>故障类型：{{ issueType || '光伏板清洗请求' }}</view>
-      <view>报修时间：刚刚</view>
-    </view>
-
-    <view class="steps-area" bindtap="advanceRepairStep">
-      <van-steps steps="{{ steps }}" active="{{ activeStep }}" direction="vertical" active-color="#1989fa" />
-      <view class="demo-hint" wx:if="{{ activeStep < 2 }}">👆 点击此处区域模拟维修进度</view>
-    </view>
+    <van-button type="info" block custom-style="margin-top: 25px; border-radius: 8px;" bind:click="submitRepair">提交报修单</van-button>
+    <van-button type="default" plain block custom-style="margin-top: 15px; border-radius: 8px;" bind:click="goToOrderList">提交记录</van-button>
   </view>
-
 </view>

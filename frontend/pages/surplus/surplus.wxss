@@ -79,27 +79,61 @@ page {
 
 .total-money { font-size: 20px; color: #ee0a24; }
 
-/* 底部操作区 */
-.action-area {
+/* ---------------- ✨ 修复手机端图层穿透的终极方案 ---------------- */
+
+/* 原生 cover-view 悬浮窗样式 */
+.action-area-cover {
   position: fixed;
-  bottom: 0; left: 0; width: 100%;
-  background: white;
+  bottom: 0; 
+  left: 0; 
+  width: 100%;
+  background-color: #ffffff;
   padding: 10px 20px 25px 20px;
   box-sizing: border-box;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-  z-index: 100;
+  /* cover-view 不支持阴影，用灰色的上边框代替阴影区分边界 */
+  border-top: 1px solid #e0e0e0; 
+  z-index: 9999;
 }
 
-.balance-text {
-  font-size: 13px; color: #666;
-  text-align: center; margin-bottom: 10px;
+.balance-text-cover {
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+  margin-bottom: 12px;
 }
 
-.btn-group {
-  display: flex; justify-content: space-between;
+.btn-group-cover {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.half-btn {
-  width: 160px !important;
-  border-radius: 20px !important;
+.cover-btn {
+  width: 46%;
+  height: 40px;
+  line-height: 40px;
+  font-size: 14px;
+  border-radius: 20px;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+/* 彻底移除微信原生按钮自带的黑边框 */
+.cover-btn::after {
+  border: none; 
+}
+
+/* 模拟 Vant info 空心按钮 */
+.plain-btn {
+  background-color: #ffffff;
+  color: #1989fa;
+  border: 1px solid #1989fa;
+}
+
+/* 模拟 Vant primary 绿/蓝实心按钮 */
+.primary-btn {
+  background-color: #07c160;
+  color: #ffffff;
+  border: 1px solid #07c160;
 }
