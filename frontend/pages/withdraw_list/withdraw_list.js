@@ -19,7 +19,7 @@ Page({
   fetchRecords() {
     wx.showNavigationBarLoading();
     wx.request({
-      url: 'https://2b77f0d8.r9.vip.cpolar.cn/api/withdraws',
+      url: 'https://466eb478.r7.cpolar.cn/api/withdraws',
       method: 'GET',
       success: (res) => {
         const data = res.data.data.map(item => ({ ...item, showSteps: false }));
@@ -87,7 +87,7 @@ Page({
       });
 
       wx.request({
-        url: `https://2b77f0d8.r9.vip.cpolar.cn/api/withdraws/${id}/advance`,
+        url: `https://466eb478.r7.cpolar.cn/api/withdraws/${id}/advance`,
         method: 'PUT'
       });
     }
@@ -129,7 +129,7 @@ Page({
           wx.showLoading({ title: '删除中...' });
           const deletePromises = selectedIds.map(id => {
             return new Promise((resolve) => {
-              wx.request({ url: `https://2b77f0d8.r9.vip.cpolar.cn/api/withdraws/${id}`, method: 'DELETE', success: resolve, fail: resolve });
+              wx.request({ url: `https://466eb478.r7.cpolar.cn/api/withdraws/${id}`, method: 'DELETE', success: resolve, fail: resolve });
             });
           });
 

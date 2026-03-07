@@ -43,7 +43,7 @@ Page({
   fetchRealPowerData() {
     wx.showNavigationBarLoading();
     wx.request({
-      url: 'https://2b77f0d8.r9.vip.cpolar.cn/api/surplus',
+      url: 'https://466eb478.r7.cpolar.cn/api/surplus',
       method: 'GET',
       success: (res) => {
         // 获取今天真实的发电量 (比如 1600度 左右)

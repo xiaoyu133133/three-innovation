@@ -69,7 +69,7 @@ Page({
     // wx.showLoading({ title: '加载中...' }); // 建议注释掉Loading，体验更好
     
     wx.request({
-      url: 'https://2b77f0d8.r9.vip.cpolar.cn/api/dashboard', 
+      url: 'https://466eb478.r7.cpolar.cn/api/dashboard', 
       method: 'GET',
       success: (res) => {
         const result = res.data;
@@ -106,7 +106,7 @@ Page({
     wx.showLoading({ title: '正在连接卫星...' });
 
     wx.request({
-      url: 'https://2b77f0d8.r9.vip.cpolar.cn/api/refresh_prediction', 
+      url: 'https://466eb478.r7.cpolar.cn/api/refresh_prediction', 
       method: 'POST',
       success: (res) => {
         if (res.data.status === 'success') {
@@ -135,7 +135,7 @@ Page({
   // ✨ 获取效率评分数据 (默认不强制刷新)
   fetchEfficiencyData(mode, force = false) {
     wx.request({
-      url: `https://2b77f0d8.r9.vip.cpolar.cn/api/efficiency?mode=${mode}&force=${force}`,
+      url: `https://466eb478.r7.cpolar.cn/api/efficiency?mode=${mode}&force=${force}`,
       method: 'GET',
       success: (res) => {
         this.setData({
