@@ -1,4 +1,5 @@
 import random
+import requests
 from fastapi import FastAPI
 from pydantic import BaseModel
 import sqlite3
@@ -82,6 +83,9 @@ class TradeRequest(BaseModel):
 class WithdrawRequest(BaseModel):
     amount: float
 
+class LoginRequest(BaseModel):
+    code: str
+
 @app.get("/api/dashboard")
 def get_dashboard_data():
     conn = get_db_connection()
@@ -115,6 +119,38 @@ def get_dashboard_data():
         "data_date": latest_date 
     }
 
+@app.post("/api/login")
+def wechat_login(req: LoginRequest):
+    # 🚨 注意：这里必须替换为你自己的小程序 AppID 和 AppSecret！
+    # 登录 微信公众平台 -> 开发管理 -> 开发设置 中获取
+    APP_ID = "你的AppID" 
+    APP_SECRET = "你的AppSecret"
+    
+    # 向微信官方服务器请求换取 openid
+    wx_url = f"https://api.weixin.qq.com/sns/jscode2session?appid={APP_ID}&secret={APP_SECRET}&js_code={req.code}&grant_type=authorization_code"
+    
+    try:
+        response = requests.get(wx_url).json()
+        
+        if "openid" in response:
+            openid = response["openid"]
+            
+            # 【实战提示】在这里通常会把 openid 存入数据库 users 表。
+            # 这里为了演示流畅，直接返回成功的 token
+            return {
+                "status": "success", 
+                "message": "登录成功",
+                "data": {
+                    "openid": openid,
+                    "token": f"token_{openid[:10]}" # 模拟生成一个安全的会话 token
+                }
+            }
+        else:
+            return {"status": "error", "message": response.get("errmsg", "微信鉴权失败")}
+            
+    except Exception as e:
+        return {"status": "error", "message": f"服务器网络异常: {str(e)}"}
+    
 #手动刷新
 @app.post("/api/refresh_prediction")
 def refresh_prediction():

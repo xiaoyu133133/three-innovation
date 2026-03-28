@@ -2,13 +2,19 @@
   
   <view class="user-header">
     <view class="avatar-box">
-      <van-icon name="manager" size="45px" color="#fff" />
+      <van-icon name="manager" size="45px" color="{{ isLoggedIn ? '#fff' : '#e0e0e0' }}" />
     </view>
-    <view class="name">哈班岔村用户</view>
+    
+    <view class="user-info-text">
+      <view class="name" wx:if="{{ isLoggedIn }}">哈班岔村用户</view>
+      <view class="name login-btn" wx:else bindtap="doLogin">点击一键登录</view>
+      
+      <view class="village-tag" wx:if="{{ isLoggedIn }}">已实名认证 · 12号光伏资产</view>
+      <view class="village-tag" wx:else>登录后查看您的专属光伏资产</view>
+    </view>
   </view>
 
   <view class="menu-list">
-    
     <view class="group-title">个人光伏资产</view>
     <van-cell-group inset custom-class="group-card">
       <van-cell title="电站基础信息" icon="info-o" is-link bind:click="goToStationInfo" />
@@ -23,7 +29,6 @@
       <van-cell title="国家光伏扶持政策" icon="newspaper-o" is-link bind:click="goToPolicies" />
       <van-cell title="智能运维与报修" icon="setting-o" is-link bind:click="goToOMManage" />
     </van-cell-group>
-
   </view>
 
 </view>
