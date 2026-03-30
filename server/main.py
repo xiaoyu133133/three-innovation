@@ -303,49 +303,54 @@ def get_surplus_data(x_wx_openid: str = Header(None)): # 👈 接收前端的 op
         return {"error": "未登录或未传递身份信息"}
 
     conn = get_db_connection()
-    today = datetime.date.today()
-    days = [(today - datetime.timedelta(days=i)).strftime("%Y-%m-%d") for i in range(4, -1, -1)]
     
-    chart_data = []
-    today_data = {}
-    
-    # 获取用户的个人碳积分 (展示独立账户)
-    user_row = conn.execute("SELECT carbon_points FROM users WHERE openid = ?", (x_wx_openid,)).fetchone()
-    my_points = user_row['carbon_points'] if user_row else 0
-    
-    for d in days:
-        row = conn.execute("SELECT SUM(power_kw) as total_power FROM pv_prediction WHERE prediction_date = ?", (d,)).fetchone()
-        global_theoretical = row['total_power'] if row and row['total_power'] else (2000.0 + random.uniform(-200, 200))
-        score_row = conn.execute("SELECT score FROM daily_efficiency WHERE prediction_date = ?", (d,)).fetchone()
-        score = score_row['score'] if score_row else 85
+    try:
+        today = datetime.date.today()
+        days = [(today - datetime.timedelta(days=i)).strftime("%Y-%m-%d") for i in range(4, -1, -1)]
         
-        global_actual_gen = global_theoretical * (score / 100.0)
+        chart_data = []
+        today_data = {}
         
-        # ✨ 核心隔离逻辑：计算该用户的个人份额 (全村 130 户平分)
-        my_actual_gen = global_actual_gen / 130.0
+        # 获取用户的个人碳积分 (展示独立账户)
+        user_row = conn.execute("SELECT carbon_points FROM users WHERE openid = ?", (x_wx_openid,)).fetchone()
+        my_points = user_row['carbon_points'] if user_row else 0
         
-        my_surplus = my_actual_gen * 0.70 
-        my_self_use = my_actual_gen * 0.30 
-        
-        my_income = my_surplus * 0.41 
-        my_saved = my_self_use * 0.56 
-        my_total_rev = my_income + my_saved
-        
-        chart_data.append({"date": d, "income": round(my_income, 2), "saved": round(my_saved, 2)})
-        
-        if d == today.strftime("%Y-%m-%d"):
-            today_data = {
-                "totalGen": round(my_actual_gen, 1),
-                "selfUse": round(my_self_use, 1),
-                "surplus": round(my_surplus, 1),
-                "income": round(my_income, 2),
-                "saved": round(my_saved, 2),
-                "totalRev": round(my_total_rev, 2),
-                "myPoints": my_points # 将该用户独立的积分下发
-            }
+        for d in days:
+            row = conn.execute("SELECT SUM(power_kw) as total_power FROM pv_prediction WHERE prediction_date = ?", (d,)).fetchone()
+            global_theoretical = row['total_power'] if row and row['total_power'] else (2000.0 + random.uniform(-200, 200))
+            score_row = conn.execute("SELECT score FROM daily_efficiency WHERE prediction_date = ?", (d,)).fetchone()
+            score = score_row['score'] if score_row else 85
             
-    conn.close()
-    return {"chart_data": chart_data, "today_data": today_data}
+            global_actual_gen = global_theoretical * (score / 100.0)
+            
+            # ✨ 核心隔离逻辑：计算该用户的个人份额 (全村 130 户平分)
+            my_actual_gen = global_actual_gen / 130.0
+            
+            my_surplus = my_actual_gen * 0.70 
+            my_self_use = my_actual_gen * 0.30 
+            
+            my_income = my_surplus * 0.41 
+            my_saved = my_self_use * 0.56 
+            my_total_rev = my_income + my_saved
+            
+            chart_data.append({"date": d, "income": round(my_income, 2), "saved": round(my_saved, 2)})
+            
+            if d == today.strftime("%Y-%m-%d"):
+                today_data = {
+                    "totalGen": round(my_actual_gen, 1),
+                    "selfUse": round(my_self_use, 1),
+                    "surplus": round(my_surplus, 1),
+                    "income": round(my_income, 2),
+                    "saved": round(my_saved, 2),
+                    "totalRev": round(my_total_rev, 2),
+                    "myPoints": my_points # 将该用户独立的积分下发
+                }
+        return {"chart_data": chart_data, "today_data": today_data}
+    except Exception as e:
+        return {"error": str(e)}
+    finally:        
+            
+        conn.close()
 
 # ================= ✨ 提现记录相关接口 =================
 

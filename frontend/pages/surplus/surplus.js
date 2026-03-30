@@ -51,10 +51,19 @@ Page({
         this.setData({
           currentData: todayData,
           withdrawableAmount: hasWithdrawn ? '0.00' : todayData.income
+        }, () => {
+          // 在 setData 的回调里，或者用 setTimeout 稍微延迟一下画图
+          setTimeout(() => {
+            this.initPieChart(todayData.selfUse, todayData.surplus);
+            this.initBarChart(chartDataArray);
+          }, 50);
         });
 
         this.initPieChart(todayData.selfUse, todayData.surplus);
         this.initBarChart(chartDataArray);
+      },
+      fail: () => {
+        wx.showToast({ title: '网络有些慢，请重试', icon: 'none' });
       },
       complete: () => wx.hideNavigationBarLoading()
     });

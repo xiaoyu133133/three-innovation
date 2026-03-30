@@ -1,10 +1,13 @@
 import * as echarts from '../../ec-canvas/echarts';
 
 let chart = null;
-// ✅ 新增：用一个变量暂存后端发来的数据
+// 用一个变量暂存后端发来的数据
 let pendingData = null;
 
 function initChart(canvas, width, height, dpr) {
+  // 如果已经有了，就不重复初始化
+  if (chart) return chart;
+
   chart = echarts.init(canvas, null, {
     width: width,
     height: height,
@@ -32,7 +35,7 @@ function initChart(canvas, width, height, dpr) {
 
   chart.setOption(option);
   
-  // ✅ 关键修复：如果暂存区有数据，立马填进去
+  // 如果暂存区有数据，立马填进去
   if (pendingData) {
     updateChart(pendingData.categories, pendingData.series);
   }
@@ -52,21 +55,33 @@ function updateChart(categories, seriesData) {
 Page({
   data: {
     ec: { onInit: initChart },
+    showChart: true, // ✨ 新增：控制图表是否渲染的开关
     currentPower: 0,
     maxPower: 0,
-    // ✨ 新增：评分数据相关的状态
     effData: null,
     demoModes: ['优秀', '良好', '一般', '异常'],
-    currentModeIndex: 1 // 默认演示“良好”
+    currentModeIndex: 1 
   },
 
   onLoad() {
     this.fetchDashboardData();
-    this.fetchEfficiencyData('良好'); // 首次加载请求良好状态
+    this.fetchEfficiencyData('良好'); 
+  },
+
+  // ✨ 核心机制：页面每次出现时重新挂载图表
+  onShow() {
+    this.setData({ showChart: true });
+  },
+
+  // ✨ 核心修复：离开首页（比如去“我的”页面）时，暴力卸载图表！
+  onHide() {
+    this.setData({ showChart: false });
+    // 关键：释放掉旧的全局实例，保证下次回来能干干净净地重新 init
+    chart = null; 
   },
 
   fetchDashboardData() {
-    // wx.showLoading({ title: '加载中...' }); // 建议注释掉Loading，体验更好
+    // wx.showNavigationBarLoading(); // 建议用这种不打断操作的 Loading
     
     wx.request({
       url: 'https://3b2b58e3.r9.vip.cpolar.cn/api/dashboard', 
@@ -80,41 +95,34 @@ Page({
           maxPower: result.max_power
         });
 
-        // ✅ 修复逻辑：
-        // 如果 chart 已经好了，直接画
+        // 刷新缓存区
+        pendingData = {
+          categories: result.categories,
+          series: result.series
+        };
+
         if (chart) {
           updateChart(result.categories, result.series);
-        } else {
-          // 如果 chart 还没好，先存起来，等 initChart 醒了自己去拿
-          pendingData = {
-            categories: result.categories,
-            series: result.series
-          };
         }
       },
       fail: (err) => {
         console.error(err);
+      },
+      complete: () => {
+        // wx.hideNavigationBarLoading();
       }
     });
   },
 
-  // ✨ 新增：手动触发数据同步
-// ... 其他代码保持不变 ...
-
-  // ✨ 手动触发数据同步
   refreshData() {
     wx.showLoading({ title: '正在连接卫星...' });
-
     wx.request({
       url: 'https://3b2b58e3.r9.vip.cpolar.cn/api/refresh_prediction', 
       method: 'POST',
       success: (res) => {
         if (res.data.status === 'success') {
           wx.showToast({ title: '同步完成', icon: 'success' });
-          
-          // ✨ 核心机制：同步气象数据时，重置提现状态，重新生成余额
           wx.removeStorageSync('hasWithdrawnToday');
-          
           this.fetchDashboardData(); 
         } else {
           wx.showToast({ title: '同步失败', icon: 'none' });
@@ -126,13 +134,10 @@ Page({
     });
   },
 
-  // ... 其他代码保持不变 ...
-
   goToSimulate() {
     wx.navigateTo({ url: '/pages/simulate/simulate' });
   },
 
-  // ✨ 获取效率评分数据 (默认不强制刷新)
   fetchEfficiencyData(mode, force = false) {
     wx.request({
       url: `https://3b2b58e3.r9.vip.cpolar.cn/api/efficiency?mode=${mode}&force=${force}`,
@@ -146,7 +151,6 @@ Page({
     });
   },
 
-  // ✨ 演示模式切换：只有在这里点击时，才传入 force=true 强制改变后端数据
   toggleDemoMode() {
     let nextIndex = this.data.currentModeIndex + 1;
     if (nextIndex >= this.data.demoModes.length) {
@@ -155,10 +159,7 @@ Page({
     const nextMode = this.data.demoModes[nextIndex];
     
     this.setData({ currentModeIndex: nextIndex });
-    
-    // 关键：传入 true 强制打乱后端当天的分数
     this.fetchEfficiencyData(nextMode, true);
-    
     wx.showToast({ title: `切换至: ${nextMode}`, icon: 'none' });
   }
 });
