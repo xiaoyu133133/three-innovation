@@ -1,40 +1,22 @@
-page { 
-  background-color: #f7f8fa; 
-}
+page { background-color: #f7f8fa; padding-bottom: 40px; }
+.user-header { background: linear-gradient(to right, #1989fa, #00b4db); padding: 40px 20px; color: white; display: flex; align-items: center; border-radius: 0 0 20px 20px; box-shadow: 0 4px 10px rgba(25,137,250,0.2); }
+.header-content { display: flex; align-items: center; width: 100%; }
+.avatar-box { width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px; }
 
-.user-header {
-  background: linear-gradient(to right, #07c160 0%, #30A865 100%);
-  padding: 40px 20px; /* 增加了一点上下内边距显得更大气 */
-  display: flex;
-  align-items: center;
-  color: white;
-}
+/* 核心伪装 1：剥离原生 button 的所有丑陋样式，变成透明图片框 */
+.avatar-btn { padding: 0; margin: 0; margin-right: 15px; background: transparent; width: 60px !important; height: 60px !important; display: flex; justify-content: center; align-items: center; }
+.avatar-btn::after { border: none; }
+.real-avatar { width: 60px; height: 60px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.8); }
 
-.avatar-box {
-  width: 70px; 
-  height: 70px;
-  background: rgba(255,255,255,0.2);
-  border-radius: 50%;
-  display: flex; 
-  justify-content: center; 
-  align-items: center;
-  margin-right: 15px;
-}
+.user-info-text { display: flex; flex-direction: column; }
+.login-btn { text-decoration: underline; font-size: 18px; font-weight: bold; color: #fff;}
+.village-tag { font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 5px; }
 
-.name { 
-  font-size: 22px; 
-  font-weight: bold; 
-}
+/* 核心伪装 2：将 input 伪装成普通名字文本，不受微信原生的样式干扰 */
+.name-input { color: #ffffff; font-size: 18px; font-weight: bold; height: 25px; min-height: 25px; width: 200px; }
 
-.menu-list { 
-  margin-top: 20px; 
-}
+.menu-list { margin-top: 20px; }
+.group-title { font-size: 13px; color: #999; margin: 15px 0 8px 20px; }
+.group-card { margin-bottom: 10px; }
 
-.group-title {
-  font-size: 13px;
-  color: #999;
-  margin: 15px 0 8px 20px;
-}
-.group-card {
-  margin-bottom: 10px;
-}
+.logout-btn-wrap { margin: 30px 20px; }

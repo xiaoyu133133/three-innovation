@@ -1,0 +1,10 @@
+page { background-color: #f7f8fa; }
+.form-group { margin-top: 15px; background: #fff; }
+.form-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid #f9f9f9; }
+.label { font-size: 15px; color: #333; }
+.avatar-btn { padding: 0; margin: 0; background: transparent; display: flex; align-items: center; width: auto !important; }
+.avatar-btn::after { border: none; }
+.avatar-img { width: 50px; height: 50px; border-radius: 8px; margin-right: 10px; border: 1px solid #eee; }
+.nickname-box { display: flex; align-items: center; }
+.nickname-input { text-align: right; margin-right: 10px; font-size: 16px; color: #666; width: 180px; }
+.logout-box { margin: 40px 20px; }

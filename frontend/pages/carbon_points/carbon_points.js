@@ -40,21 +40,26 @@ Page({
   },
 
   // ✨ 新增：获取后端计算的真实发电度数
+  // ✨ 获取后端计算的真实发电度数
   fetchRealPowerData() {
+    const myOpenId = wx.getStorageSync('user_openid');
+    if (!myOpenId) return; // 如果未登录，直接用默认数据，不发请求
+
     wx.showNavigationBarLoading();
     wx.request({
       url: 'https://466eb478.r7.cpolar.cn/api/surplus',
       method: 'GET',
+      header: { 'x-wx-openid': myOpenId }, // ✨ 带上身份证
       success: (res) => {
-        // 获取今天真实的发电量 (比如 1600度 左右)
+        if (res.data.error) return;
+
+        // 获取今天真实的个人发电量份额
         const todayGen = res.data.today_data.totalGen || 1500;
-        // 计算本月截止到今天的总天数
         const daysPassed = new Date().getDate();
-        // 乘法得出本月真实累计发电度数
         const monthTotal = Math.round(todayGen * daysPassed);
 
         this.setData({ totalPower: monthTotal });
-        this.calculateEcoData(); // 拿到真实数据后再算碳排
+        this.calculateEcoData(); 
       },
       complete: () => wx.hideNavigationBarLoading()
     });

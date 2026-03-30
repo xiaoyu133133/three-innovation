@@ -25,20 +25,31 @@ Page({
   },
 
   fetchRealDataAndRender() {
+    // ✨ 1. 拿取本地的身份证
+    const myOpenId = wx.getStorageSync('user_openid');
+    if (!myOpenId) {
+      // 未登录状态下，可以给个空数据或者直接拦截
+      return; 
+    }
+
     wx.showNavigationBarLoading();
     wx.request({
       url: 'https://466eb478.r7.cpolar.cn/api/surplus',
       method: 'GET',
+      // ✨ 2. 塞入请求头
+      header: { 'x-wx-openid': myOpenId },
       success: (res) => {
+        if (res.data.error) {
+           return wx.showToast({ title: res.data.error, icon: 'none' });
+        }
+        
         const todayData = res.data.today_data;
         const chartDataArray = res.data.chart_data;
 
-        // ✨ 检查今天是否已经提现过
         const hasWithdrawn = wx.getStorageSync('hasWithdrawnToday');
 
         this.setData({
           currentData: todayData,
-          // 如果已提现，归零；否则显示真实收益
           withdrawableAmount: hasWithdrawn ? '0.00' : todayData.income
         });
 
@@ -134,35 +145,43 @@ goToWithdrawList() {
 },
 
 // ✨ 调用后端保存提现记录
-applyWithdraw() {
-  const amount = parseFloat(this.data.withdrawableAmount);
-  if (amount <= 0) {
-    return wx.showToast({ title: '暂无可提现余额', icon: 'none' });
-  }
-
-  wx.showModal({
-    title: '提现确认',
-    content: `确定将 ¥${amount} 提现至绑定的银行卡吗？`,
-    success: (res) => {
-      if (res.confirm) {
-        wx.showLoading({ title: '申请中...' });
-        wx.request({
-          url: 'https://466eb478.r7.cpolar.cn/api/withdraw',
-          method: 'POST',
-          data: { amount: amount },
-          success: (wRes) => {
-            if (wRes.data.status === 'success') {
-              wx.showToast({ title: '提现申请已提交', icon: 'success' });
-              
-              // ✨ 核心修改：提现成功后，记录状态，并立即将余额归零
-              wx.setStorageSync('hasWithdrawnToday', true);
-              this.setData({ withdrawableAmount: '0.00', activeStep: 0 });
-            }
-          },
-          complete: () => wx.hideLoading()
-        });
-      }
+  applyWithdraw() {
+    const amount = parseFloat(this.data.withdrawableAmount);
+    if (amount <= 0) {
+      return wx.showToast({ title: '暂无可提现余额', icon: 'none' });
     }
-  });
-}
+
+    // ✨ 1. 提现前必须校验身份
+    const myOpenId = wx.getStorageSync('user_openid');
+    if (!myOpenId) {
+      return wx.showToast({ title: '请先前往我的页面登录', icon: 'none' });
+    }
+
+    wx.showModal({
+      title: '提现确认',
+      content: `确定将 ¥${amount} 提现至绑定的银行卡吗？`,
+      success: (res) => {
+        if (res.confirm) {
+          wx.showLoading({ title: '申请中...' });
+          wx.request({
+            url: 'https://466eb478.r7.cpolar.cn/api/withdraw',
+            method: 'POST',
+            // ✨ 2. 塞入请求头，告诉后端是谁在提现
+            header: { 'x-wx-openid': myOpenId },
+            data: { amount: amount },
+            success: (wRes) => {
+              if (wRes.data.status === 'success') {
+                wx.showToast({ title: '提现申请已提交', icon: 'success' });
+                wx.setStorageSync('hasWithdrawnToday', true);
+                this.setData({ withdrawableAmount: '0.00', activeStep: 0 });
+              } else {
+                wx.showToast({ title: wRes.data.error || '提现失败', icon: 'none' });
+              }
+            },
+            complete: () => wx.hideLoading()
+          });
+        }
+      }
+    });
+  }
 });

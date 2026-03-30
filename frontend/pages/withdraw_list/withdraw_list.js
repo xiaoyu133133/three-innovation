@@ -17,11 +17,20 @@ Page({
   },
 
   fetchRecords() {
+    const myOpenId = wx.getStorageSync('user_openid');
+    if (!myOpenId) {
+      this.setData({ records: [], totalBalance: '0.00' });
+      return wx.showToast({ title: '请先登录查看记录', icon: 'none' });
+    }
+
     wx.showNavigationBarLoading();
     wx.request({
       url: 'https://466eb478.r7.cpolar.cn/api/withdraws',
       method: 'GET',
+      header: { 'x-wx-openid': myOpenId }, // ✨ 核心：带上身份证查记录
       success: (res) => {
+        if (res.data.error) return; // 拦截报错
+        
         const data = res.data.data.map(item => ({ ...item, showSteps: false }));
         this.setData({ 
           records: data,
@@ -70,6 +79,7 @@ Page({
   },
 
   // 推进进度的交互保持不变
+  // 推进进度的交互
   advanceStep(e) {
     if (this.data.isEditMode) return;
     
@@ -78,7 +88,6 @@ Page({
 
     if (record.status < 2) {
       wx.vibrateShort(); 
-      
       const newStatus = record.status + 1;
       const statusKey = `records[${index}].status`;
       
@@ -86,9 +95,11 @@ Page({
         this.calculateTotal(); 
       });
 
+      const myOpenId = wx.getStorageSync('user_openid');
       wx.request({
         url: `https://466eb478.r7.cpolar.cn/api/withdraws/${id}/advance`,
-        method: 'PUT'
+        method: 'PUT',
+        header: { 'x-wx-openid': myOpenId } // ✨ 规范操作带上头部
       });
     }
   },
@@ -120,6 +131,9 @@ Page({
   deleteSelected() {
     const { selectedIds } = this.data;
     if (selectedIds.length === 0) return;
+    
+    const myOpenId = wx.getStorageSync('user_openid');
+
     wx.showModal({
       title: '确认删除',
       content: `确定要删除这 ${selectedIds.length} 条记录吗？`,
@@ -129,7 +143,13 @@ Page({
           wx.showLoading({ title: '删除中...' });
           const deletePromises = selectedIds.map(id => {
             return new Promise((resolve) => {
-              wx.request({ url: `https://466eb478.r7.cpolar.cn/api/withdraws/${id}`, method: 'DELETE', success: resolve, fail: resolve });
+              wx.request({ 
+                url: `https://466eb478.r7.cpolar.cn/api/withdraws/${id}`, 
+                method: 'DELETE', 
+                header: { 'x-wx-openid': myOpenId }, // ✨ 规范操作带上头部
+                success: resolve, 
+                fail: resolve 
+              });
             });
           });
 

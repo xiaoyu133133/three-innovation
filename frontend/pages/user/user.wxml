@@ -1,17 +1,28 @@
 <view class="container">
-  
   <view class="user-header">
-    <view class="avatar-box">
-      <van-icon name="manager" size="45px" color="{{ isLoggedIn ? '#fff' : '#e0e0e0' }}" />
-    </view>
     
-    <view class="user-info-text">
-      <view class="name" wx:if="{{ isLoggedIn }}">哈班岔村用户</view>
-      <view class="name login-btn" wx:else bindtap="doLogin">点击一键登录</view>
-      
-      <view class="village-tag" wx:if="{{ isLoggedIn }}">已实名认证 · 12号光伏资产</view>
-      <view class="village-tag" wx:else>登录后查看您的专属光伏资产</view>
+    <view class="header-content" wx:if="{{ !isLoggedIn }}" bindtap="doLogin">
+      <view class="avatar-box"><van-icon name="manager" size="45px" color="#e0e0e0" /></view>
+      <view class="user-info-text">
+        <view class="name login-btn">点击一键登录</view>
+        <view class="village-tag">登录后查看您的专属光伏资产</view>
+      </view>
     </view>
+
+    <view class="header-content" wx:else bindtap="goToProfile">
+      <view class="avatar-box">
+        <image wx:if="{{ avatarUrl }}" src="{{ avatarUrl }}" mode="aspectFill" class="real-avatar"></image>
+        <van-icon wx:else name="manager" size="45px" color="#fff" />
+      </view>
+      <view class="user-info-text">
+        <view class="name">
+          {{ nickName || '哈班岔村用户' }} 
+          <van-icon name="edit" size="14px" color="#fff" custom-style="margin-left:8px; opacity:0.8;"/>
+        </view>
+        <view class="village-tag">已实名认证 · 12号光伏资产</view>
+      </view>
+    </view>
+
   </view>
 
   <view class="menu-list">

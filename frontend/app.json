@@ -12,7 +12,8 @@
     "pages/village_summary/village_summary",
     "pages/policies/policies",
     "pages/om_manage/om_manage",
-    "pages/om_list/om_list" 
+    "pages/om_list/om_list",
+    "pages/profile/profile"
   ],
   "window": {
     "backgroundTextStyle": "light",

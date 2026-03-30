@@ -1,6 +1,6 @@
 import random
 import requests
-from fastapi import FastAPI
+from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel
 import sqlite3
 import datetime
@@ -123,33 +123,31 @@ def get_dashboard_data():
 def wechat_login(req: LoginRequest):
     # 🚨 注意：这里必须替换为你自己的小程序 AppID 和 AppSecret！
     # 登录 微信公众平台 -> 开发管理 -> 开发设置 中获取
-    APP_ID = "你的AppID" 
-    APP_SECRET = "你的AppSecret"
-    
-    # 向微信官方服务器请求换取 openid
+    APP_ID = "wxa358095e0335a6b6" 
+    APP_SECRET = "f6567723f596e0dc0b362b8318b8161b"
     wx_url = f"https://api.weixin.qq.com/sns/jscode2session?appid={APP_ID}&secret={APP_SECRET}&js_code={req.code}&grant_type=authorization_code"
-    
     try:
-        response = requests.get(wx_url).json()
+        res = requests.get(wx_url, timeout=10)
+        response = res.json()
+        openid = response.get("openid")
         
-        if "openid" in response:
-            openid = response["openid"]
+        if openid:
+            # ✨ 核心：用户存在则忽略，不存在则自动注册入库
+            conn = get_db_connection()
+            now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            conn.execute("INSERT OR IGNORE INTO users (openid, join_time) VALUES (?, ?)", (openid, now))
+            conn.commit()
+            conn.close()
             
-            # 【实战提示】在这里通常会把 openid 存入数据库 users 表。
-            # 这里为了演示流畅，直接返回成功的 token
             return {
                 "status": "success", 
                 "message": "登录成功",
-                "data": {
-                    "openid": openid,
-                    "token": f"token_{openid[:10]}" # 模拟生成一个安全的会话 token
-                }
+                "data": {"openid": openid, "token": f"token_{openid[:10]}"}
             }
         else:
-            return {"status": "error", "message": response.get("errmsg", "微信鉴权失败")}
-            
+            return {"status": "error", "message": f"鉴权失败: {response.get('errmsg')}"}
     except Exception as e:
-        return {"status": "error", "message": f"服务器网络异常: {str(e)}"}
+        return {"status": "error", "message": f"后端运行异常: {str(e)}"}
     
 #手动刷新
 @app.post("/api/refresh_prediction")
@@ -297,55 +295,53 @@ def get_efficiency(mode: str = "良好", force: str = "false"):
     }
 
 # ✨ 新增接口：获取最近 5 天真实的计算收益
+# ================= ✨ 2. 收益模拟接口升级：分离个人与村集体 =================
+# 这里我们用一个非常精妙的数学魔法：用总发电量除以 130（村里总户数），算作个人的独立发电量和收益！
 @app.get("/api/surplus")
-def get_surplus_data():
+def get_surplus_data(x_wx_openid: str = Header(None)): # 👈 接收前端的 openid 身份头
+    if not x_wx_openid:
+        return {"error": "未登录或未传递身份信息"}
+
     conn = get_db_connection()
     today = datetime.date.today()
-    # 生成过去 5 天的日期列表（包括今天）
     days = [(today - datetime.timedelta(days=i)).strftime("%Y-%m-%d") for i in range(4, -1, -1)]
     
     chart_data = []
     today_data = {}
     
+    # 获取用户的个人碳积分 (展示独立账户)
+    user_row = conn.execute("SELECT carbon_points FROM users WHERE openid = ?", (x_wx_openid,)).fetchone()
+    my_points = user_row['carbon_points'] if user_row else 0
+    
     for d in days:
-        # 1. 查当日理论发电量 (对 24 小时的预测功率求积分：SUM)
         row = conn.execute("SELECT SUM(power_kw) as total_power FROM pv_prediction WHERE prediction_date = ?", (d,)).fetchone()
-        theoretical = row['total_power'] if row and row['total_power'] else 0
-        
-        # 防呆设计：如果系统昨天没运行导致没数据，为了答辩展示不空屏，保底给一个 2000 度的基础值
-        if theoretical == 0:
-            theoretical = 2000.0 + random.uniform(-200, 200)
-            
-        # 2. 查当日效率评分
+        global_theoretical = row['total_power'] if row and row['total_power'] else (2000.0 + random.uniform(-200, 200))
         score_row = conn.execute("SELECT score FROM daily_efficiency WHERE prediction_date = ?", (d,)).fetchone()
-        score = score_row['score'] if score_row else 85 # 没查到默认给 85 分
+        score = score_row['score'] if score_row else 85
         
-        # 3. 核心计算：实际发电量 = 理论量 * 效率
-        actual_gen = theoretical * (score / 100.0)
+        global_actual_gen = global_theoretical * (score / 100.0)
         
-        surplus = actual_gen * 0.70  # 余电上网 70%
-        self_use = actual_gen * 0.30 # 自发自用 30%
+        # ✨ 核心隔离逻辑：计算该用户的个人份额 (全村 130 户平分)
+        my_actual_gen = global_actual_gen / 130.0
         
-        income = surplus * 0.41 # 上网收益
-        saved = self_use * 0.56 # 节省电费
-        total_rev = income + saved
+        my_surplus = my_actual_gen * 0.70 
+        my_self_use = my_actual_gen * 0.30 
         
-        # 装入图表数组
-        chart_data.append({
-            "date": d,
-            "income": round(income, 2),
-            "saved": round(saved, 2)
-        })
+        my_income = my_surplus * 0.41 
+        my_saved = my_self_use * 0.56 
+        my_total_rev = my_income + my_saved
         
-        # 记录今天的数据供卡片使用
+        chart_data.append({"date": d, "income": round(my_income, 2), "saved": round(my_saved, 2)})
+        
         if d == today.strftime("%Y-%m-%d"):
             today_data = {
-                "totalGen": round(actual_gen, 1),
-                "selfUse": round(self_use, 1),
-                "surplus": round(surplus, 1),
-                "income": round(income, 2),
-                "saved": round(saved, 2),
-                "totalRev": round(total_rev, 2)
+                "totalGen": round(my_actual_gen, 1),
+                "selfUse": round(my_self_use, 1),
+                "surplus": round(my_surplus, 1),
+                "income": round(my_income, 2),
+                "saved": round(my_saved, 2),
+                "totalRev": round(my_total_rev, 2),
+                "myPoints": my_points # 将该用户独立的积分下发
             }
             
     conn.close()
@@ -355,20 +351,22 @@ def get_surplus_data():
 
 # 1. 申请提现
 @app.post("/api/withdraw")
-def apply_withdraw(req: WithdrawRequest):
+def apply_withdraw(req: WithdrawRequest, x_wx_openid: str = Header(None)): # 👈 认人
+    if not x_wx_openid:
+        return {"error": "权限不足"}
     conn = get_db_connection()
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    # ✨ 修改：真实发起提现时，状态必须是 0 (待审核)
-    conn.execute("INSERT INTO withdrawals (amount, status, apply_time) VALUES (?, ?, ?)", (req.amount, 0, now))
+    # 存入带有专属 openid 的提现记录
+    conn.execute("INSERT INTO withdrawals (openid, amount, status, apply_time) VALUES (?, ?, ?, ?)", (x_wx_openid, req.amount, 0, now))
     conn.commit()
     conn.close()
     return {"status": "success"}
 
-# 2. 获取提现记录
 @app.get("/api/withdraws")
-def get_withdraws():
+def get_withdraws(x_wx_openid: str = Header(None)): # 👈 认人
     conn = get_db_connection()
-    rows = conn.execute("SELECT * FROM withdrawals ORDER BY id DESC").fetchall()
+    # ✨ 核心隔离逻辑：只查询该 openid 名下的提现流水！
+    rows = conn.execute("SELECT * FROM withdrawals WHERE openid = ? ORDER BY id DESC", (x_wx_openid,)).fetchall()
     conn.close()
     return {"data": [dict(r) for r in rows]}
 
