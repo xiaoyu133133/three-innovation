@@ -13,7 +13,7 @@ Page({
   fetchOrders() {
     wx.showNavigationBarLoading();
     wx.request({
-      url: 'https://3b2b58e3.r9.vip.cpolar.cn/api/orders',
+      url: 'https://bd8d882.r9.vip.cpolar.cn/api/orders',
       method: 'GET',
       success: (res) => {
         this.setData({ 
@@ -94,7 +94,7 @@ Page({
           const deletePromises = selectedIds.map(id => {
             return new Promise((resolve) => {
               wx.request({
-                url: `https://3b2b58e3.r9.vip.cpolar.cn/api/orders/${id}`,
+                url: `https://bd8d882.r9.vip.cpolar.cn/api/orders/${id}`,
                 method: 'DELETE',
                 success: resolve,
                 fail: resolve

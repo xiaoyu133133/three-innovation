@@ -31,7 +31,7 @@ Page({
     wx.showLoading({ title: '智能定价中...' });
 
     wx.request({
-      url: 'https://3b2b58e3.r9.vip.cpolar.cn/api/simulate',
+      url: 'https://bd8d882.r9.vip.cpolar.cn/api/simulate',
       method: 'POST',
       data: {
         buy_count: parseFloat(this.data.buyCount),
@@ -69,7 +69,7 @@ Page({
     };
 
     wx.request({
-      url: 'https://3b2b58e3.r9.vip.cpolar.cn/api/trade',
+      url: 'https://bd8d882.r9.vip.cpolar.cn/api/trade',
       method: 'POST',
       data: tradeData,
       success: (res) => {

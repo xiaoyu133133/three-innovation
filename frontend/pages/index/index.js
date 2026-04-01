@@ -76,15 +76,13 @@ Page({
   // ✨ 核心修复：离开首页（比如去“我的”页面）时，暴力卸载图表！
   onHide() {
     this.setData({ showChart: false });
-    // 关键：释放掉旧的全局实例，保证下次回来能干干净净地重新 init
-    chart = null; 
   },
 
   fetchDashboardData() {
     // wx.showNavigationBarLoading(); // 建议用这种不打断操作的 Loading
     
     wx.request({
-      url: 'https://3b2b58e3.r9.vip.cpolar.cn/api/dashboard', 
+      url: 'https://bd8d882.r9.vip.cpolar.cn/api/dashboard', 
       method: 'GET',
       success: (res) => {
         const result = res.data;
@@ -117,7 +115,7 @@ Page({
   refreshData() {
     wx.showLoading({ title: '正在连接卫星...' });
     wx.request({
-      url: 'https://3b2b58e3.r9.vip.cpolar.cn/api/refresh_prediction', 
+      url: 'https://bd8d882.r9.vip.cpolar.cn/api/refresh_prediction', 
       method: 'POST',
       success: (res) => {
         if (res.data.status === 'success') {
@@ -140,7 +138,7 @@ Page({
 
   fetchEfficiencyData(mode, force = false) {
     wx.request({
-      url: `https://3b2b58e3.r9.vip.cpolar.cn/api/efficiency?mode=${mode}&force=${force}`,
+      url: `https://bd8d882.r9.vip.cpolar.cn/api/efficiency?mode=${mode}&force=${force}`,
       method: 'GET',
       success: (res) => {
         this.setData({
